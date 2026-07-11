@@ -1,0 +1,52 @@
+﻿using Popcorn.Api.Dto;
+using Popcorn.Api.Models;
+using System.Net;
+
+namespace Popcorn.Api.Services
+{
+	public class TmdbPeopleService : IPeopleService
+	{
+		private readonly IHttpClientFactory _factory;
+
+		public TmdbPeopleService(IHttpClientFactory factory)
+		{
+			_factory = factory;
+		}
+
+		public async Task<PersonDetailsDto?> GetPersonDetails(int id)
+		{
+			var client = _factory.CreateClient("TMDB");
+			var response = await client.GetAsync($"person/{id}");
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			if (!response.IsSuccessStatusCode)
+			{
+				response.EnsureSuccessStatusCode();
+			}
+
+			var result = await response.Content.ReadFromJsonAsync<TmdbPersonDetails>();
+
+			if(result == null)
+			{
+				return null;
+			}
+
+			return new PersonDetailsDto
+			{
+				Id = result.Id,
+				Biography = result.Biography,
+				Birthday = result.Birthday,
+				Deathday = result.Deathday == null ? "present" : result.Deathday,
+				Homepage = result.Homepage == null ? "" : result.Homepage,
+				KnownForDepartment = result.KnownForDepartment,
+				Name = result.Name,
+				PlaceOfBirth = result.PlaceOfBirth,
+				ProfilePath = result.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.ProfilePath}"
+			};
+		}
+	}
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Popcorn.Api.Models;
+using Popcorn.Api.Dto;
+using Popcorn.Api.Services;
 
 namespace Popcorn.Api.Controllers
 {
@@ -7,23 +8,18 @@ namespace Popcorn.Api.Controllers
 	[Route("api/v1/people")]
 	public class PeopleController : ControllerBase
 	{
-		private readonly IHttpClientFactory _factory;
+		private readonly IPeopleService _peopleService;
 
-		public PeopleController(IHttpClientFactory factory)
+		public PeopleController(IPeopleService peopleService)
 		{
-			_factory = factory;
+			_peopleService = peopleService;
 		}
 
 		[HttpGet]
 		[Route("{id}")]
-		public async Task<ActionResult<TmdbPersonDetails>> Get([FromRoute] int id)
+		public async Task<ActionResult<PersonDetailsDto>> Get([FromRoute] int id)
 		{
-			var client = _factory.CreateClient("TMDB");
-			var respond = await client.GetAsync($"person/{id}");
-
-			respond.EnsureSuccessStatusCode();
-
-			var result = await respond.Content.ReadFromJsonAsync<TmdbPersonDetails>();
+			var result = await _peopleService.GetPersonDetails(id);
 
 			if (result != null)
 				return Ok(result);

@@ -11,7 +11,7 @@ namespace Popcorn.Api.Models
 		[JsonPropertyName("overview")]
 		public string Overview { get; set; } = string.Empty;
 		[JsonPropertyName("poster_path")]
-		public string PosterPath { get; set; } = string.Empty;
+		public string? PosterPath { get; set; }
 		[JsonPropertyName("release_date")]
 		public string ReleaseDate { get; set; } = string.Empty;
 		[JsonPropertyName("status")]
@@ -20,7 +20,7 @@ namespace Popcorn.Api.Models
 		public string Title { get; set; } = string.Empty;
 	}
 
-	public class TmdbSerieDetails
+	public class TmdbTvSerieDetails
 	{
 		[JsonPropertyName("id")]
 		public int Id { get; set; }
@@ -36,6 +36,8 @@ namespace Popcorn.Api.Models
 		public string Overview { get; set; } = string.Empty;
 		[JsonPropertyName("status")]
 		public string Status { get; set; } = string.Empty;
+		[JsonPropertyName("poster_path")]
+		public string? PosterPath { get; set; }
 	}
 
 	public class TmdbPersonDetails
@@ -55,7 +57,7 @@ namespace Popcorn.Api.Models
 		[JsonPropertyName("place_of_birth")]
 		public string PlaceOfBirth { get; set; } = string.Empty;
 		[JsonPropertyName("profile_path")]
-		public string ProfilePath { get; set; } = string.Empty;
+		public string? ProfilePath { get; set; }
 		[JsonPropertyName("known_for_department")]
 		public string KnownForDepartment { get; set; } = string.Empty;
 	}

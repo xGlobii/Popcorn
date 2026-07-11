@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Models;
+using System.Net;
 using System.Text.Json;
 
 namespace Popcorn.Api.Services
@@ -21,14 +22,17 @@ namespace Popcorn.Api.Services
 			var client = _factory.CreateClient("TMDB");
 			var response = await client.GetAsync($"search/multi?query={Uri.EscapeDataString(query)}&page={page}");
 
-			response.EnsureSuccessStatusCode();
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			if (!response.IsSuccessStatusCode)
+				response.EnsureSuccessStatusCode();
 
 			var result = await response.Content.ReadFromJsonAsync<TmdbResponse<TmdbResult>>(_jsonOptions);
 
-			if (result != null)
-				return result;
-			else
-				return null;
+			return result;
 		}
 
 		public async Task<TmdbResponse<TmdbMovie>?> GetMovie(string title, int page = 1)
@@ -36,14 +40,15 @@ namespace Popcorn.Api.Services
 			var client = _factory.CreateClient("TMDB");
 			var response = await client.GetAsync($"search/movie?query={Uri.EscapeDataString(title)}&page={page}");
 
-			response.EnsureSuccessStatusCode();
+			if (response.StatusCode == HttpStatusCode.NotFound)
+				return null;
+
+			if (!response.IsSuccessStatusCode)
+				response.EnsureSuccessStatusCode();
 
 			var result = await response.Content.ReadFromJsonAsync<TmdbResponse<TmdbMovie>>(_jsonOptions);
 
-			if (result != null)
-				return result;
-			else
-				return null;
+			return result;
 		}
 
 		public async Task<TmdbResponse<TmdbSerie>?> GetSerie(string title, int page = 1)
@@ -51,14 +56,15 @@ namespace Popcorn.Api.Services
 			var client = _factory.CreateClient("TMDB");
 			var response = await client.GetAsync($"search/tv?query={Uri.EscapeDataString(title)}&page={page}");
 
-			response.EnsureSuccessStatusCode();
+			if (response.StatusCode == HttpStatusCode.NotFound)
+				return null;
+
+			if (!response.IsSuccessStatusCode)
+				response.EnsureSuccessStatusCode();
 
 			var result = await response.Content.ReadFromJsonAsync<TmdbResponse<TmdbSerie>>(_jsonOptions);
 
-			if (result != null)
-				return result;
-			else
-				return null;
+			return result;
 		}
 
 		public async Task<TmdbResponse<TmdbPerson>?> GetPerson(string name, int page = 1)
@@ -66,14 +72,15 @@ namespace Popcorn.Api.Services
 			var client = _factory.CreateClient("TMDB");
 			var response = await client.GetAsync($"search/person?query={Uri.EscapeDataString(name)}&page={page}");
 
-			response.EnsureSuccessStatusCode();
+			if (response.StatusCode == HttpStatusCode.NotFound)
+				return null;
+
+			if (!response.IsSuccessStatusCode)
+				response.EnsureSuccessStatusCode();
 
 			var result = await response.Content.ReadFromJsonAsync<TmdbResponse<TmdbPerson>>(_jsonOptions);
 
-			if (result != null)
-				return result;
-			else
-				return null;
+			return result;
 		}
 	}
 }

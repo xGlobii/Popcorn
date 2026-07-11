@@ -28,6 +28,7 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<ISearchService, TmdbSearchService>();
 			builder.Services.AddScoped<IMoviesService, TmdbMoviesService>();
 			builder.Services.AddScoped<ITvSeriesService, TmdbTvSeriesService>();
+			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
 
 			var app = builder.Build();
 

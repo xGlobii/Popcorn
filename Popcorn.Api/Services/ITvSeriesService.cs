@@ -1,9 +1,9 @@
-﻿using Popcorn.Api.Models;
+﻿using Popcorn.Api.Dto;
 
 namespace Popcorn.Api.Services
 {
 	public interface ITvSeriesService
 	{
-		public Task<TmdbSerieDetails?> GetTvSerieDetails(int id);
+		public Task<TvSerieDetailsDto?> GetTvSerieDetails(int id);
 	}
 }

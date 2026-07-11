@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Popcorn.Api.Models;
+using Popcorn.Api.Dto;
 using Popcorn.Api.Services;
 
 namespace Popcorn.Api.Controllers
@@ -17,7 +17,7 @@ namespace Popcorn.Api.Controllers
 
 		[HttpGet]
 		[Route("{id}")]
-		public async Task<ActionResult<TmdbMovieDetails>> Get([FromRoute] int id)
+		public async Task<ActionResult<MovieDetailsDto>> Get([FromRoute] int id)
 		{
 			var result = await _moviesService.GetMovieDetails(id);
 
