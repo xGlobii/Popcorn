@@ -1,4 +1,4 @@
-﻿namespace Popcorn.Api.Dto
+﻿namespace Popcorn.Shared.Dto
 {
 	public class MovieDetailsDto
 	{

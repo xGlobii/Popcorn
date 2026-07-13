@@ -12,4 +12,8 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Popcorn.Shared\Popcorn.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

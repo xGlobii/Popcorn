@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="Popcorn.Api/Popcorn.Api.csproj" />
+  <Project Path="Popcorn.Client/Popcorn.Client.csproj" Id="719bfe2f-a205-4f56-995c-7153f138d8e9" />
+  <Project Path="Popcorn.Shared/Popcorn.Shared.csproj" Id="2fd8a34d-4c33-4fff-a96e-78898bb913d3" />
 </Solution>

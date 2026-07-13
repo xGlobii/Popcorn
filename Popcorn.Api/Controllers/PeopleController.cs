@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Popcorn.Api.Dto;
 using Popcorn.Api.Services;
+using Popcorn.Shared.Dto;
 
 namespace Popcorn.Api.Controllers
 {

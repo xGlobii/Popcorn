@@ -12,6 +12,8 @@ namespace Popcorn.Api
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+			var corsPolicy = "PopcornApiPolicy";
+
 			// Add services to the container.
 
 			builder.Services.AddControllers();
@@ -30,6 +32,14 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<ITvSeriesService, TmdbTvSeriesService>();
 			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
 
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy(name: corsPolicy, policy =>
+				{
+					policy.WithOrigins("https://localhost:7224");
+				});
+			});
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -40,6 +50,8 @@ namespace Popcorn.Api
 			}
 
 			app.UseHttpsRedirection();
+
+			app.UseCors(corsPolicy);
 
 			app.UseAuthorization();
 

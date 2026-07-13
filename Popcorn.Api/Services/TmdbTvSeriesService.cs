@@ -1,5 +1,5 @@
-﻿using Popcorn.Api.Dto;
-using Popcorn.Api.Models;
+﻿using Popcorn.Api.Models;
+using Popcorn.Shared.Dto;
 using System.Net;
 
 namespace Popcorn.Api.Services

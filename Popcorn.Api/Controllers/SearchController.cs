@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Models;
 using Popcorn.Api.Services;
-using System.Text.Json;
 
 namespace Popcorn.Api.Controllers
 {
@@ -18,9 +17,9 @@ namespace Popcorn.Api.Controllers
 
 		[HttpGet]
 		[Route("multi")]
-		public async Task<ActionResult<TmdbResponse<TmdbResult>>> GetMulti([FromQuery] string query, [FromQuery] int page = 1)
+		public async Task<ActionResult<TmdbResponse<TmdbResult>>> GetMulti([FromQuery] string title, [FromQuery] int page = 1)
 		{
-			var result = await _serachService.GetMulti(query, page);
+			var result = await _serachService.GetMulti(title, page);
 
 			if (result != null)
 				return Ok(result);
