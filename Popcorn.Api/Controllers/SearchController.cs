@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Models;
 using Popcorn.Api.Services;
+using Popcorn.Shared.Dto;
 
 namespace Popcorn.Api.Controllers
 {
@@ -17,9 +18,9 @@ namespace Popcorn.Api.Controllers
 
 		[HttpGet]
 		[Route("multi")]
-		public async Task<ActionResult<TmdbResponse<TmdbResult>>> GetMulti([FromQuery] string title, [FromQuery] int page = 1)
+		public async Task<ActionResult<ResponseDto>> GetMulti([FromQuery] string query, [FromQuery] int page = 1)
 		{
-			var result = await _serachService.GetMulti(title, page);
+			var result = await _serachService.GetMulti(query, page);
 
 			if (result != null)
 				return Ok(result);
@@ -30,38 +31,38 @@ namespace Popcorn.Api.Controllers
 
 		[HttpGet]
 		[Route("movie")]
-		public async Task<ActionResult<TmdbResponse<TmdbMovie>>> GetMovie([FromQuery] string title, [FromQuery] int page = 1)
+		public async Task<ActionResult<ResponseDto>> GetMovie([FromQuery] string query, [FromQuery] int page = 1)
 		{
-			var result = await _serachService.GetMovie(title, page);
+			var result = await _serachService.GetMovie(query, page);
 
 			if (result != null)
 				return Ok(result);
 			else
-				return NotFound($"Movie with title {title} not found!");
+				return NotFound($"Movie with title {query} not found!");
 		}
 
 		[HttpGet]
 		[Route("tv")]
-		public async Task<ActionResult<TmdbResponse<TmdbSerie>>> GetSerie([FromQuery] string title, [FromQuery] int page = 1)
+		public async Task<ActionResult<ResponseDto>> GetSerie([FromQuery] string query, [FromQuery] int page = 1)
 		{
-			var result = await _serachService.GetSerie(title, page);
+			var result = await _serachService.GetSerie(query, page);
 
 			if (result != null)
 				return Ok(result);
 			else
-				return NotFound($"Tv serie with title {title} not found!");
+				return NotFound($"Tv serie with title {query} not found!");
 		}
 
 		[HttpGet]
 		[Route("person")]
-		public async Task<ActionResult<TmdbResponse<TmdbPerson>>> GetPerson([FromQuery] string name, [FromQuery] int page = 1)
+		public async Task<ActionResult<TmdbResponse<TmdbPerson>>> GetPerson([FromQuery] string query, [FromQuery] int page = 1)
 		{
-			var result = await _serachService.GetPerson(name, page);
+			var result = await _serachService.GetPerson(query, page);
 
 			if (result != null)
 				return Ok(result);
 			else
-				return NotFound($"Person of name {name} not found!");
+				return NotFound($"Person of name {query} not found!");
 		}
 	}
 }

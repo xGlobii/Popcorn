@@ -1,0 +1,40 @@
+﻿@inject NavigationManager NavigationManager
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow p-3">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="#">Popcorn</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Library</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Profile</a>
+				</li>
+			</ul>
+		</div>
+		<form class="d-flex" role="search">
+			<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" @bind="Query" @bind:event="oninput"/>
+			<button class="btn btn-outline-success btn-secondary" @onclick="() => Search()" @onclick:preventDefault="true">Search</button>
+		</form>
+		<button class="btn btn-outline-success ms-2 btn-primary">Login</button>
+	</div>
+</nav>
+
+@code {
+	public string? Query { get; set; }
+
+	private void Search()
+	{
+		if (Query != null)
+			NavigationManager.NavigateTo($"/Search?query={Uri.EscapeDataString(Query)}");
+		else
+			NavigationManager.NavigateTo("/Home");
+	}
+}

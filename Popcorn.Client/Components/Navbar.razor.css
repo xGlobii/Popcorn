@@ -1,0 +1,29 @@
+﻿.navbar {
+    background-color: white !important;
+    z-index: 10;
+}
+
+.form-control {
+    background-color: #eee;
+    border-radius: 20px !important;
+}
+
+.btn-primary {
+    background-color: #FFD700;
+    outline: none !important;
+    font-weight: bold;
+    color: #AA8F00;
+    border-radius: 20px;
+    padding: 10px 20px 10px 20px;
+    border: 0px;
+}
+
+.btn-secondary {
+    outline-color: #FFE16D !important;
+    border: 1px solid #AA8F00 !important;
+    color: #AA8F00;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    padding: 10px 20px 10px 20px;
+    font-weight: bold;
+}

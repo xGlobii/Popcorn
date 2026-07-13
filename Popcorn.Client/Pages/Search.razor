@@ -1,0 +1,28 @@
+﻿@page "/search"
+@using Popcorn.Shared.Dto
+@inject HttpClient httpClient
+
+@if(Response == null)
+{
+    <Loading />
+}
+else
+{
+    foreach(var item in Response.Results)
+    {
+        <img src="@item.ImagePath" style="height: 40px;"/> <br />
+    }
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? Query { get; set; }
+    public ResponseDto? Response { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Response = null;
+        if(Query != null)
+            Response = await httpClient.GetFromJsonAsync<ResponseDto>($"api/v1/search/multi?query={Uri.EscapeDataString(Query)}");
+    }
+}
