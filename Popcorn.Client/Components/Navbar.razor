@@ -33,8 +33,8 @@
 	private void Search()
 	{
 		if (Query != null)
-			NavigationManager.NavigateTo($"/Search?query={Uri.EscapeDataString(Query)}");
+			NavigationManager.NavigateTo($"/search?query={Uri.EscapeDataString(Query)}&media-type=multi&page=1");
 		else
-			NavigationManager.NavigateTo("/Home");
+			NavigationManager.NavigateTo("/");
 	}
 }

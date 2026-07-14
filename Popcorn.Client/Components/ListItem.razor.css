@@ -1,0 +1,11 @@
+﻿.overview {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.media-card:hover
+{
+    transform: scale(1.01);
+}

@@ -15,5 +15,6 @@
 		public string Overview { get; set; } = string.Empty;
 		public string ImagePath { get; set; } = string.Empty;
 		public string MediaType { get; set; } = string.Empty;
+		public string Url { get; set; } = string.Empty;
 	}
 }

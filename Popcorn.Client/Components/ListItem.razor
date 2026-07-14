@@ -1,0 +1,41 @@
+﻿@inject NavigationManager NavigationManager
+
+<div class="card mb-3 card-item media-card">
+	<div class="row g-0">
+		<div class="col-md-2">
+			<img src="@ImagePath" class="img-fluid rounded-start" alt="...">
+		</div>
+		<div class="col-md-10">
+			<div class="card-body">
+				<h5 class="card-title">
+					<NavLink href="@Url" class="stretched-link text-reset text-decoration-none">
+						@Name
+					</NavLink>
+				</h5>
+				<p class="card-text overview">@Overview</p>
+				<p class="card-text"><small class="text-body-secondary">@MediaType</small></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public int Id { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public string Name { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string Overview { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string ImagePath { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string MediaType { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string Url { get; set; } = string.Empty;
+}

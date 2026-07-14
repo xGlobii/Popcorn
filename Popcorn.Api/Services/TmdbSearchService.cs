@@ -48,7 +48,8 @@ namespace Popcorn.Api.Services
 							ImagePath = movie.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{movie.PosterPath}",
 							MediaType = "movie",
 							Name = movie.Title,
-							Overview = movie.Overview
+							Overview = movie.Overview,
+							Url = $"movies/{movie.Id}"
 						});
 						break;
 					case TmdbSerie serie:
@@ -58,7 +59,8 @@ namespace Popcorn.Api.Services
 							ImagePath = serie.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{serie.PosterPath}",
 							MediaType = "tv",
 							Name = serie.Name,
-							Overview = serie.Overview
+							Overview = serie.Overview,
+							Url = $"tvs/{serie.Id}"
 						});
 						break;
 					case TmdbPerson person:
@@ -68,7 +70,8 @@ namespace Popcorn.Api.Services
 							ImagePath = person.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{person.ProfilePath}",
 							MediaType = "person",
 							Name = person.Name,
-							Overview = ""
+							Overview = "",
+							Url = $"people/{person.Id}"
 						});
 						break;
 				}
@@ -111,7 +114,8 @@ namespace Popcorn.Api.Services
 					ImagePath = item.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{item.PosterPath}",
 					MediaType = "movie",
 					Name = item.Title,
-					Overview = item.Overview
+					Overview = item.Overview,
+					Url = $"movies/{item.Id}"
 				});
 			}
 
@@ -152,7 +156,8 @@ namespace Popcorn.Api.Services
 					ImagePath = item.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{item.PosterPath}",
 					MediaType = "tv",
 					Name = item.Name,
-					Overview = item.Overview
+					Overview = item.Overview,
+					Url = $"tvs/{item.Id}"
 				});
 			}
 
@@ -193,7 +198,8 @@ namespace Popcorn.Api.Services
 					ImagePath = item.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{item.ProfilePath}",
 					MediaType = "person",
 					Name = item.Name,
-					Overview = ""
+					Overview = "",
+					Url = $"people/{item.Id}"
 				});
 			}
 

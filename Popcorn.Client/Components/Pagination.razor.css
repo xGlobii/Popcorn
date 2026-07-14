@@ -1,0 +1,9 @@
+﻿.page-text {
+    color: #AA8F00;
+}
+
+::deep .page-link.active{
+    color: white !important;
+    background-color: #FFD700 !important;
+    border-color: #EEC600;
+}

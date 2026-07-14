@@ -1,0 +1,29 @@
+﻿<div class="container">
+	<div class="row">
+		<div class="col-1 mx-auto">
+			<nav aria-label="...">
+				<ul class="pagination">
+					<li class="page-item"><NavLink href="@($"{Url}&page={CurrentPage - 1}")" class="page-link"><span class="page-text">Previous</span></NavLink></li>
+					@for(int i = 1; i <= TotalPages; i++)
+					{
+						var pageElement = i;
+						<li class="page-item"><NavLink class="page-link" href="@($"{Url}&page={@pageElement}")"><span class="page-text">@pageElement</span></NavLink></li>
+					}
+					<li class="page-item"><NavLink class="page-link" href="@($"{Url}&page={CurrentPage+1}")"><span class="page-text">Next</span></NavLink></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+
+@code{
+	[EditorRequired]
+	[Parameter]
+	public int CurrentPage { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public int TotalPages { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public string Url { get; set; } = string.Empty;
+}
