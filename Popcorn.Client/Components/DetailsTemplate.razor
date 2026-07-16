@@ -1,0 +1,29 @@
+﻿<div class="card mb-3 card-item media-card">
+	<div class="row g-0">
+		<div class="col-md-4">
+			<img src="@ImageUrl" class="img-fluid rounded-start" alt="...">
+		</div>
+		<div class="col-md-8">
+			<div class="card-body">
+				<p class="card-title">
+					<h3>@Name</h3>
+				</p>
+				<p class="card-text">
+					@Overview
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public string ImageUrl { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string Name { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string Overview { get; set; } = string.Empty;
+}

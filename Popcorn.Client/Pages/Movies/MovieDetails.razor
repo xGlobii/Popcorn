@@ -1,0 +1,31 @@
+﻿@page "/movies/{Id:int}"
+@using Popcorn.Shared.Dto
+@inject HttpClient HttpClient
+
+@if (DetailsDto == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="container mt-4">
+		<div class="row">
+			<div class="mx-auto">
+				<DetailsTemplate ImageUrl="@DetailsDto.PosterPath" Name="@DetailsDto.Title" Overview="@DetailsDto.Overview"/>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	public MovieDetailsDto? DetailsDto { get; set; }
+
+	protected async override Task OnParametersSetAsync()
+	{
+		DetailsDto = null;
+		DetailsDto = await HttpClient.GetFromJsonAsync<MovieDetailsDto>($"api/v1/movies/{Id}");
+	}
+}

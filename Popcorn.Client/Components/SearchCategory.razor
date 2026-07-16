@@ -1,0 +1,39 @@
+﻿<div class="container">
+	<div class="row">
+		<div class="col">
+			<ul class="list-group list-group-horizontal">
+				<li class="list-group-item">
+					<NavLink href="@GenerateUrl("multi")" class="text-decoration-none text-reset stretched-link">
+						<span class="list-item-text">[ Multi ]</span>
+					</NavLink>
+				</li>
+				<li class="list-group-item">
+					<NavLink href="@GenerateUrl("movie")" class="text-decoration-none text-reset stretched-link">
+						<span class="list-item-text">[ Movies ]</span>
+					</NavLink>
+				</li>
+				<li class="list-group-item">
+					<NavLink href="@GenerateUrl("tv")" class="text-decoration-none text-reset stretched-link">
+						<span class="list-item-text">[ Tv ]</span>
+					</NavLink>
+				</li>
+				<li class="list-group-item">
+					<NavLink href="@GenerateUrl("person")" class="text-decoration-none text-reset stretched-link">
+						<span class="list-item-text">[ Person ]</span>
+					</NavLink>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public string Query { get; set; } = string.Empty;
+
+	private string GenerateUrl(string mediaType)
+	{
+		return $"/search?query={Uri.EscapeDataString(Query)}&media-type={mediaType}&page=1";
+	}
+}

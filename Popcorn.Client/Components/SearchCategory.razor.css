@@ -1,0 +1,19 @@
+﻿::deep .active span {
+    color: #C9A900;
+    font-weight: bold;
+}
+
+.list-item-text {
+    color: #C9A900;
+}
+
+
+.list-group-item {
+    border: 1px solid #eee;
+}
+
+    .list-group-item:hover {
+        transform: scale(1.04);
+        background-color: #fcfcfc;
+        color: #FCDC33;
+    }
