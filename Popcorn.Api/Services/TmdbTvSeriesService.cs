@@ -42,7 +42,8 @@ namespace Popcorn.Api.Services
 				NumberOfSeasons = result.NumberOfSeasons,
 				Overview = result.Overview,
 				Status = result.Status,
-				PosterPath = result.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.PosterPath}"
+				PosterPath = result.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.PosterPath}",
+				HomePage = result.HomePage == null ? "" : result.HomePage
 			};
 		}
 	}

@@ -38,6 +38,8 @@ namespace Popcorn.Api.Models
 		public string Status { get; set; } = string.Empty;
 		[JsonPropertyName("poster_path")]
 		public string? PosterPath { get; set; }
+		[JsonPropertyName("homepage")]
+		public string? HomePage { get; set; }
 	}
 
 	public class TmdbPersonDetails

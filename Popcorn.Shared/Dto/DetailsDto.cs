@@ -21,6 +21,7 @@
 		public string Overview { get; set; } = string.Empty;
 		public string Status { get; set; } = string.Empty;
 		public string PosterPath { get; set; } = string.Empty;
+		public string HomePage { get; set; } = string.Empty;
 	}
 
 	public class PersonDetailsDto

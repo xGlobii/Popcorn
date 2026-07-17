@@ -1,0 +1,7 @@
+﻿<a class="btn btn-homepage" href="@HomepageUrl" target="_blank"><i class="bi bi-house"></i>@(" ")Homepage</a>
+
+@code{
+	[EditorRequired]
+	[Parameter]
+	public string HomepageUrl { get; set; } = string.Empty;
+}

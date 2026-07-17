@@ -1,8 +1,8 @@
-﻿@page "/movies/{Id:int}"
+﻿@page "/tvs/{Id:int}"
 @using Popcorn.Shared.Dto
 @inject HttpClient HttpClient
 
-@if (DetailsDto == null)
+@if(DetailsDto == null)
 {
 	<Loading />
 }
@@ -11,9 +11,9 @@ else
 	<div class="container mt-4">
 		<div class="row">
 			<div class="mx-auto">
-				<DetailsTemplate ImageUrl="@DetailsDto.PosterPath" Name="@DetailsDto.Title" Overview="@DetailsDto.Overview">
+				<DetailsTemplate ImageUrl="@DetailsDto.PosterPath" Name="@DetailsDto.Name" Overview="@DetailsDto.Overview">
 					<Details>
-						<AdvancedDetails Status="@DetailsDto.Status" ReleaseDate="@DetailsDto.ReleaseDate"/>
+						<AdvancedDetails ReleaseDate="@DetailsDto.FirstAirDate" Status="@DetailsDto.Status" />
 					</Details>
 					<Homepage>
 						@if (DetailsDto.HomePage != null)
@@ -22,7 +22,7 @@ else
 						}
 					</Homepage>
 					<ListButtons>
-						<MediaActionPanel MediaId="@DetailsDto.Id" MediaType="movie"/>
+						<MediaActionPanel MediaId="@DetailsDto.Id" MediaType="tv" />
 					</ListButtons>
 				</DetailsTemplate>
 			</div>
@@ -34,11 +34,11 @@ else
 	[Parameter]
 	public int Id { get; set; }
 
-	public MovieDetailsDto? DetailsDto { get; set; }
+	public TvSerieDetailsDto? DetailsDto { get; set; }
 
 	protected async override Task OnParametersSetAsync()
 	{
 		DetailsDto = null;
-		DetailsDto = await HttpClient.GetFromJsonAsync<MovieDetailsDto>($"api/v1/movies/{Id}");
+		DetailsDto = await HttpClient.GetFromJsonAsync<TvSerieDetailsDto>($"api/v1/tvs/{Id}");
 	}
 }
