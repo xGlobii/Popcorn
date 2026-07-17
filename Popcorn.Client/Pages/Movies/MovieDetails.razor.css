@@ -1,0 +1,10 @@
+﻿.btn-homepage {
+    background-color: #00F1FF;
+    border: 1px solid #00DBE8;
+    color: white;
+}
+
+    .btn-homepage:hover {
+        transform: scale(1.02);
+        background-color: #00E0EE;
+    }

@@ -1,0 +1,10 @@
+﻿.watchlist-btn {
+    background-color: #FFD700;
+    color: #8C7500;
+    border: 1px solid #E9C400;
+}
+
+    .watchlist-btn:hover {
+        transform: scale(1.02);
+        background-color: #EEC600;
+    }

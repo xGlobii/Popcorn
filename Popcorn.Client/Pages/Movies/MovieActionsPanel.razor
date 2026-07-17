@@ -1,0 +1,31 @@
+﻿<ActionButton ButtonPressed="ManageWatchlist" ButtonText="@WatchlistButtonText" IsLoading="@WatchlistIsLoading" Icon="@WatchListIcon" Style="@WatchListStyle"/>
+<ActionButton ButtonPressed="ManageWatched" ButtonText="@WatchedButtonText" IsLoading="@WatchedIsLoading" Icon="@WatchedIcon"/>
+
+@code {
+
+	public bool WatchlistIsLoading { get; set; } = false;
+	public string WatchlistButtonText { get; set; } = "Add to watchlist";
+	public string WatchListIcon { get; set; } = "bi-bookmark";
+	public string WatchListStyle { get; set; } = "watchlist-btn";
+	public bool WatchedIsLoading { get; set; } = false;
+	public string WatchedButtonText { get; set; } = "Mark as watched";
+	public string WatchedIcon { get; set; } = "bi-eye";
+
+	private async Task ManageWatchlist()
+	{
+		WatchlistIsLoading = true;
+		await Task.Delay(1000);
+		WatchlistIsLoading = false;
+		WatchlistButtonText = "Remove from watchlist";
+		WatchListIcon = "bi-bookmark-fill";
+	}
+
+	private async Task ManageWatched()
+	{
+		WatchedIsLoading = true;
+		await Task.Delay(1000);
+		WatchedIsLoading = false;
+		WatchedButtonText = "Mark as non watched";
+		WatchedIcon = "bi-check-circle";
+	}
+}

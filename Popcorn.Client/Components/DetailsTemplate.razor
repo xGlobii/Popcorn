@@ -4,13 +4,25 @@
 			<img src="@ImageUrl" class="img-fluid rounded-start" alt="...">
 		</div>
 		<div class="col-md-8">
-			<div class="card-body">
-				<p class="card-title">
-					<h3>@Name</h3>
+			<div class="card-body d-flex flex-column h-100">
+				<h3 class="card-title">@Name</h3>
+				<p class="card-text">
+					@Details
 				</p>
 				<p class="card-text">
 					@Overview
 				</p>
+				<div class="align-middle my-auto align-items-center d-flex flex-column">
+					@if (Homepage != null)
+					{
+						<p>
+							@Homepage
+						</p>
+					}
+					<p class="card-text">
+						@ListButtons
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -26,4 +38,10 @@
 	[EditorRequired]
 	[Parameter]
 	public string Overview { get; set; } = string.Empty;
+	[Parameter]
+	public RenderFragment? Homepage { get; set; }
+	[Parameter]
+	public RenderFragment? ListButtons { get; set; }
+	[Parameter]
+	public RenderFragment? Details { get; set; }
 }

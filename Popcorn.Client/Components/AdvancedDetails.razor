@@ -1,0 +1,13 @@
+﻿<p>
+	<span class="badge text-danger status-bg">@Status</span>
+	<span class="text-secondary"> • @ReleaseDate</span>
+</p>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public string Status { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string ReleaseDate { get; set; } = string.Empty;
+}

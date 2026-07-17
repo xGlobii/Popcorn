@@ -1,0 +1,30 @@
+﻿@if (IsLoading)
+{
+	<button type="button" class="btn btn-outline-success @Style" @onclick="ButtonPressed" disabled>
+		<i class="bi @Icon"></i>
+		@ButtonText
+	</button>
+}
+else
+{
+	<button type="button" class="btn btn-outline-success @Style" @onclick="ButtonPressed">
+		<i class="bi @Icon"></i>
+		@ButtonText
+	</button>	
+}
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public string ButtonText { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public bool IsLoading { get; set; } = false;
+	[EditorRequired]
+	[Parameter]
+	public string Icon { get; set; } = string.Empty;
+	[Parameter]
+	public EventCallback ButtonPressed { get; set; }
+	[Parameter]
+	public string Style { get; set; } = string.Empty;
+}
