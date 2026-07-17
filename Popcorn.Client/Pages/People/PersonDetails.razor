@@ -1,0 +1,44 @@
+﻿@page "/people/{Id:int}"
+@using Popcorn.Shared.Dto
+@inject HttpClient HttpClient
+
+@if (DetailsDto == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="container mt-4">
+		<div class="row">
+			<div class="mx-auto">
+				<DetailsTemplate ImageUrl="@DetailsDto.ProfilePath" Name="@DetailsDto.Name" Overview="@DetailsDto.Biography">
+					<Details>
+						@if (DetailsDto.Age.HasValue)
+						{
+							<AdvancedDetails Status="@($"Age: {DetailsDto.Age.ToString()}")" ReleaseDate="@($"{DetailsDto.Birthday} - {DetailsDto.Deathday}")" />
+						}
+					</Details>
+					<Homepage>
+						@if (DetailsDto.Homepage != null)
+						{
+							<HomepageButton HomepageUrl="@DetailsDto.Homepage" />
+						}
+					</Homepage>
+				</DetailsTemplate>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	public PersonDetailsDto? DetailsDto { get; set; }
+
+	protected async override Task OnParametersSetAsync()
+	{
+		DetailsDto = null;
+		DetailsDto = await HttpClient.GetFromJsonAsync<PersonDetailsDto>($"api/v1/people/{Id}");
+	}
+}

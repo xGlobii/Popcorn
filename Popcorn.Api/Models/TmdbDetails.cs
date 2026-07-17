@@ -49,7 +49,7 @@ namespace Popcorn.Api.Models
 		[JsonPropertyName("biography")]
 		public string Biography { get; set; } = string.Empty;
 		[JsonPropertyName("birthday")]
-		public string Birthday { get; set; } = string.Empty;
+		public string? Birthday { get; set; }
 		[JsonPropertyName("deathday")]
 		public string? Deathday { get; set; }
 		[JsonPropertyName("name")]

@@ -35,5 +35,6 @@
 		public string PlaceOfBirth { get; set; } = string.Empty;
 		public string ProfilePath { get; set; } = string.Empty;
 		public string KnownForDepartment { get; set; } = string.Empty;
+		public int? Age { get; set; }
 	}
 }

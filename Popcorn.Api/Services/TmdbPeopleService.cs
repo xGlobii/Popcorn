@@ -30,7 +30,7 @@ namespace Popcorn.Api.Services
 
 			var result = await response.Content.ReadFromJsonAsync<TmdbPersonDetails>();
 
-			if(result == null)
+			if (result == null)
 			{
 				return null;
 			}
@@ -39,14 +39,34 @@ namespace Popcorn.Api.Services
 			{
 				Id = result.Id,
 				Biography = result.Biography,
-				Birthday = result.Birthday,
+				Birthday = result.Birthday == null ? "" : result.Birthday,
 				Deathday = result.Deathday == null ? "present" : result.Deathday,
 				Homepage = result.Homepage == null ? "" : result.Homepage,
 				KnownForDepartment = result.KnownForDepartment,
 				Name = result.Name,
 				PlaceOfBirth = result.PlaceOfBirth,
-				ProfilePath = result.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.ProfilePath}"
+				ProfilePath = result.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.ProfilePath}",
+				Age = CalculateAge(result.Deathday == null ? null : DateTime.Parse(result.Deathday), result.Birthday == null ? null : DateTime.Parse(result.Birthday))
 			};
+		}
+
+		private int? CalculateAge(DateTime? deathday, DateTime? birthday)
+		{
+			int age = 0;
+
+			deathday ??= DateTime.UtcNow;
+
+			if (birthday == null)
+				return null;
+
+			age = deathday.Value.Year - birthday.Value.Year;
+
+			if (deathday.Value.Month < birthday.Value.Month)
+				age -= 1;
+			else if (deathday.Value.Month == birthday.Value.Month && deathday.Value.Day < birthday.Value.Day)
+				age -= 1;
+
+			return age;
 		}
 	}
 }
