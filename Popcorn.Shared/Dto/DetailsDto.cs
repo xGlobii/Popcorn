@@ -1,4 +1,6 @@
-﻿namespace Popcorn.Shared.Dto
+﻿using System.Text.Json.Serialization;
+
+namespace Popcorn.Shared.Dto
 {
 	public class MovieDetailsDto
 	{
@@ -22,6 +24,27 @@
 		public string Status { get; set; } = string.Empty;
 		public string PosterPath { get; set; } = string.Empty;
 		public string HomePage { get; set; } = string.Empty;
+		public required IReadOnlyList<SeasonDto> Seasons { get; set; }
+	}
+
+	public class SeasonDto
+	{
+		public string Name { get; set; } = string.Empty;
+		public string Overview { get; set; } = string.Empty;
+		public int SeasonNumber { get; set; }
+	}
+
+	public class EpisodesDetailsDto
+	{
+		public required IReadOnlyList<EpisodeDto> Episodes { get; set; }
+	}
+
+	public class EpisodeDto
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public string Overview { get; set; } = string.Empty;
+		public string ImagePath { get; set; } = string.Empty;
 	}
 
 	public class PersonDetailsDto

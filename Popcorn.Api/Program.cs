@@ -55,7 +55,6 @@ namespace Popcorn.Api
 
 			app.UseAuthorization();
 
-
 			app.MapControllers();
 
 			app.Run();

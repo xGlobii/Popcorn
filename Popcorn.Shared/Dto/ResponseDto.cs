@@ -3,7 +3,7 @@
 	public class ResponseDto
 	{
 		public int Page { get; set; }
-		public required List<ResponseItemDto> Results { get; set; }
+		public required IReadOnlyList<ResponseItemDto> Results { get; set; }
 		public int TotalPages { get; set; }
 		public int TotalResults { get; set; }
 	}

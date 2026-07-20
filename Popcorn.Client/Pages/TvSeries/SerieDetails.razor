@@ -1,0 +1,48 @@
+﻿@using Popcorn.Shared.Dto
+
+@if (EpisodesDetailsDto == null)
+{
+	<Loading />
+}
+else
+{
+	<p>
+		<select value="@ActiveSeasonNumber" @onchange="HandleSeasonChange">
+			@foreach (var season in Seasons)
+			{
+				<option value="@season.SeasonNumber">@season.Name</option>
+			}
+
+
+		</select>
+	</p>
+	<p>
+		@Seasons[ActiveSeasonNumber - 1].Overview
+	</p>
+	<p>
+		@foreach(var episode in EpisodesDetailsDto.Episodes)
+		{
+			<img src="@episode.ImagePath" />
+		}
+	</p>
+}
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public IReadOnlyList<SeasonDto> Seasons { get; set; }
+	[Parameter]
+	public EventCallback<int> SelectedSeason { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public int ActiveSeasonNumber { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public EpisodesDetailsDto? EpisodesDetailsDto { get; set; }
+
+	private void HandleSeasonChange(ChangeEventArgs e)
+	{
+		int seasonNumber = Convert.ToInt32(e.Value);
+		SelectedSeason.InvokeAsync(seasonNumber);
+	}
+}

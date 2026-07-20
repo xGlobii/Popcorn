@@ -2,7 +2,7 @@
 @using Popcorn.Shared.Dto
 @inject HttpClient HttpClient
 
-@if(DetailsDto == null)
+@if (DetailsDto == null)
 {
 	<Loading />
 }
@@ -27,7 +27,21 @@ else
 				</DetailsTemplate>
 			</div>
 		</div>
+		<div class="row">
+			<div class="season-collapse">
+				<div class="collapse-btn">
+					<button type="button" class="w-100" @onclick="() => ToggleCollapse()">
+						Seasons
+					</button>
+				</div>
+				<div class="season-details" hidden="@(!IsExpanded)" style="background-color: red; min-height: 200px;">
+					<SerieDetails ActiveSeasonNumber="@ActiveSeason" Seasons="@DetailsDto.Seasons" SelectedSeason="HandleSeasonChange" EpisodesDetailsDto="@EpisodesDetails" />
+				</div>
+			</div>
+		</div>
 	</div>
+
+
 }
 
 @code {
@@ -35,10 +49,53 @@ else
 	public int Id { get; set; }
 
 	public TvSerieDetailsDto? DetailsDto { get; set; }
+	public EpisodesDetailsDto? EpisodesDetails { get; set; } = null;
+
+	public Dictionary<int, EpisodesDetailsDto> CachedEpisodes { get; set; } = new();
+
+	public bool IsExpanded { get; set; } = false;
+	public int ActiveSeason { get; set; } = 1;
 
 	protected async override Task OnParametersSetAsync()
 	{
+		ActiveSeason = 1;
+		IsExpanded = false;
+		CachedEpisodes.Clear();
+		EpisodesDetails = null;
 		DetailsDto = null;
 		DetailsDto = await HttpClient.GetFromJsonAsync<TvSerieDetailsDto>($"api/v1/tvs/{Id}");
+	}
+
+	private async Task ToggleCollapse()
+	{
+		IsExpanded = !IsExpanded;
+
+		if(IsExpanded)
+			await GetSeasonEpisodes();
+	}
+
+	private async Task HandleSeasonChange(int season)
+	{
+		ActiveSeason = season;
+		await GetSeasonEpisodes();
+	}
+
+	private async Task GetSeasonEpisodes()
+	{
+		if(CachedEpisodes.ContainsKey(ActiveSeason))
+		{
+			EpisodesDetails = CachedEpisodes[ActiveSeason];
+		}
+		else
+		{
+			EpisodesDetails = null;
+			EpisodesDetailsDto? episodes = await HttpClient.GetFromJsonAsync<EpisodesDetailsDto>($"api/v1/tvs/{Id}/season/{ActiveSeason}");
+			if(episodes != null)
+			{
+				CachedEpisodes.Add(ActiveSeason, episodes);
+			}
+			EpisodesDetails = episodes;
+		}
+
 	}
 }

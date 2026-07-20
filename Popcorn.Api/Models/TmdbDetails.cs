@@ -40,6 +40,36 @@ namespace Popcorn.Api.Models
 		public string? PosterPath { get; set; }
 		[JsonPropertyName("homepage")]
 		public string? HomePage { get; set; }
+		[JsonPropertyName("seasons")]
+		public List<Season> Seasons { get; set; } = new();
+	}
+
+	public class Season
+	{
+		[JsonPropertyName("name")]
+		public string Name { get; set; } = string.Empty;
+		[JsonPropertyName("overview")]
+		public string? Overview { get; set; }
+		[JsonPropertyName("season_number")]
+		public int SeasonNumber { get; set; }
+	}
+
+	public class EpisodesDetails
+	{
+		[JsonPropertyName("episodes")]
+		public List<Episode> Episodes { get; set; } = new();
+	}
+
+	public class Episode
+	{
+		[JsonPropertyName("id")]
+		public int Id { get; set; }
+		[JsonPropertyName("name")]
+		public string Name { get; set; } = string.Empty;
+		[JsonPropertyName("overview")]
+		public string? Overview { get; set; }
+		[JsonPropertyName("still_path")]
+		public string ImagePath { get; set; } = string.Empty;
 	}
 
 	public class TmdbPersonDetails

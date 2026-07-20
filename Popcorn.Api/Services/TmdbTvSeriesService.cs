@@ -33,6 +33,21 @@ namespace Popcorn.Api.Services
 			if (result == null)
 				return null;
 
+			List<SeasonDto> seasons = new();
+
+			foreach (var season in result.Seasons)
+			{
+				if (season.SeasonNumber != 0)
+				{
+					seasons.Add(new SeasonDto
+					{
+						Name = season.Name,
+						Overview = season.Overview == null ? "" : season.Overview,
+						SeasonNumber = season.SeasonNumber
+					});
+				}
+			}
+
 			return new TvSerieDetailsDto
 			{
 				Id = result.Id,
@@ -43,7 +58,47 @@ namespace Popcorn.Api.Services
 				Overview = result.Overview,
 				Status = result.Status,
 				PosterPath = result.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.PosterPath}",
-				HomePage = result.HomePage == null ? "" : result.HomePage
+				HomePage = result.HomePage == null ? "" : result.HomePage,
+				Seasons = seasons
+			};
+		}
+
+		public async Task<EpisodesDetailsDto?> GetEpisodesDetails(int id, int seasonNumber)
+		{
+			var client = _factory.CreateClient("TMDB");
+			var resposne = await client.GetAsync($"tv/{id}/season/{seasonNumber}");
+
+			if(resposne.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			if(!resposne.IsSuccessStatusCode)
+			{
+				resposne.EnsureSuccessStatusCode();
+			}
+
+			var result = await resposne.Content.ReadFromJsonAsync<EpisodesDetails>();
+
+			if (result == null)
+				return null;
+
+			List<EpisodeDto> episodes = new();
+
+			foreach(var episode in result.Episodes)
+			{
+				episodes.Add(new EpisodeDto
+				{
+					Id = episode.Id,
+					ImagePath = $"https://image.tmdb.org/t/p/w500{episode.ImagePath}",
+					Name = episode.Name,
+					Overview = episode.Overview == null ? "" : episode.Overview
+				});
+			}
+
+			return new EpisodesDetailsDto
+			{
+				Episodes = episodes
 			};
 		}
 	}

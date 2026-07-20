@@ -26,5 +26,17 @@ namespace Popcorn.Api.Controllers
 			else
 				return NotFound($"Tv serie with id {id} not found!");
 		}
+
+		[HttpGet]
+		[Route("{id}/season/{seasonNumber}")]
+		public async Task<ActionResult<EpisodesDetailsDto>> Get([FromRoute] int id, [FromRoute] int seasonNumber)
+		{
+			var result = await _tvSeriesService.GetEpisodesDetails(id, seasonNumber);
+
+			if (result != null)
+				return Ok(result);
+			else
+				return NotFound($"Tv serie with id {id} or season {seasonNumber} not found!");
+		}
 	}
 }
