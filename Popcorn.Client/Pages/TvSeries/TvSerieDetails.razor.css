@@ -1,0 +1,20 @@
+﻿.season-details{
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+}
+
+.seasons-container{
+    border: 1px solid black;
+}
+
+.collapse-btn{
+    border: 1px solid #aaa;
+    border-radius: 7px;
+    background-color: white;
+}
+
+.collapse-btn > button{
+    background-color: rgba(0,0,0,0);
+    border: 0px;
+}
