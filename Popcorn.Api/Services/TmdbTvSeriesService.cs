@@ -92,7 +92,8 @@ namespace Popcorn.Api.Services
 					Id = episode.Id,
 					ImagePath = $"https://image.tmdb.org/t/p/w500{episode.ImagePath}",
 					Name = episode.Name,
-					Overview = episode.Overview == null ? "" : episode.Overview
+					Overview = episode.Overview == null ? "" : episode.Overview,
+					EpisodeNumber = episode.EpisodeNumber
 				});
 			}
 

@@ -45,6 +45,7 @@ namespace Popcorn.Shared.Dto
 		public string Name { get; set; } = string.Empty;
 		public string Overview { get; set; } = string.Empty;
 		public string ImagePath { get; set; } = string.Empty;
+		public int EpisodeNumber { get; set; }
 	}
 
 	public class PersonDetailsDto

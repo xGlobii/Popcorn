@@ -1,0 +1,30 @@
+﻿<div class="card h-100">
+    <img src="@ImageUrl" class="card-img-top" alt="...">
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">@EpisodeName</h5>
+        <p class="card-text episode-overview" >@Overview</p>
+        <button type="button" @onclick="HandleButtonClick" class="btn btn-action align-self-center mt-auto">Details</button>
+    </div>
+</div>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public string ImageUrl { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string EpisodeName { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string Overview { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public int EpisodeNumber { get; set; }
+	[Parameter]
+	public EventCallback<int> DetailsButtonClicked { get; set; }
+
+	private async Task HandleButtonClick()
+	{
+		await DetailsButtonClicked.InvokeAsync(EpisodeNumber);
+	}
+}

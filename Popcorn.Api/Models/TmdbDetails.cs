@@ -70,6 +70,8 @@ namespace Popcorn.Api.Models
 		public string? Overview { get; set; }
 		[JsonPropertyName("still_path")]
 		public string ImagePath { get; set; } = string.Empty;
+		[JsonPropertyName("episode_number")]
+		public int EpisodeNumber { get; set; }
 	}
 
 	public class TmdbPersonDetails

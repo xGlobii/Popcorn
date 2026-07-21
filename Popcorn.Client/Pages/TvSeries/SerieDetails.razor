@@ -6,25 +6,49 @@
 }
 else
 {
-	<p>
-		<select value="@ActiveSeasonNumber" @onchange="HandleSeasonChange">
-			@foreach (var season in Seasons)
-			{
-				<option value="@season.SeasonNumber">@season.Name</option>
-			}
-
-
-		</select>
-	</p>
-	<p>
-		@Seasons[ActiveSeasonNumber - 1].Overview
-	</p>
-	<p>
-		@foreach(var episode in EpisodesDetailsDto.Episodes)
+	<div class="row">
+		<div class="col-12">
+			<select class="form-select form-select-sm mb-3" value="@ActiveSeasonNumber" @onchange="HandleSeasonChange">
+				@foreach (var season in Seasons)
+				{
+					<option value="@season.SeasonNumber">@season.Name</option>
+				}
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			@Seasons[ActiveSeasonNumber - 1].Overview
+		</div>
+	</div>
+	<div class="row">
+		@foreach (var episode in EpisodesDetailsDto.Episodes)
 		{
-			<img src="@episode.ImagePath" />
+			<div class="col-3 gy-3 justify-content-center">
+				<EpisodeItem EpisodeName="@episode.Name" ImageUrl="@episode.ImagePath" Overview="@episode.Overview" EpisodeNumber="@episode.EpisodeNumber" DetailsButtonClicked="HandleButtonClick"/>
+			</div>
 		}
-	</p>
+	</div>
+
+	@if (SelectedEpisode != null)
+	{
+		<div class="modal show modal-background" @onclick="CloseModal" style="display: block" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" @onclick:stopPropagation="true">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">@SelectedEpisode.Name</h1>
+						<button @onclick="CloseModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<img src="@SelectedEpisode.ImagePath" class="w-100 mb-3">
+						<p>
+							@SelectedEpisode.Overview
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
 }
 
 @code {
@@ -40,9 +64,22 @@ else
 	[Parameter]
 	public EpisodesDetailsDto? EpisodesDetailsDto { get; set; }
 
+	public EpisodeDto? SelectedEpisode { get; set; } = null;
+
 	private void HandleSeasonChange(ChangeEventArgs e)
 	{
 		int seasonNumber = Convert.ToInt32(e.Value);
 		SelectedSeason.InvokeAsync(seasonNumber);
+	}
+
+	private void HandleButtonClick(int id)
+	{
+		if(EpisodesDetailsDto != null)
+			SelectedEpisode = EpisodesDetailsDto.Episodes[id - 1];
+	}
+
+	private void CloseModal()
+	{
+		SelectedEpisode = null;
 	}
 }

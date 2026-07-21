@@ -1,0 +1,17 @@
+﻿.btn-action {
+    background-color: #FFD700;
+    color: #AA8F00;
+    font-weight: bold;
+}
+
+    .btn-action:hover {
+        transform: scale(1.02);
+        background-color: #FBD300;
+    }
+
+.episode-overview {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical !important;
+}

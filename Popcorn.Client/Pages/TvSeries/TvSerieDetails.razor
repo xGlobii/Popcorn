@@ -34,14 +34,12 @@ else
 						Seasons
 					</button>
 				</div>
-				<div class="season-details" hidden="@(!IsExpanded)" style="background-color: red; min-height: 200px;">
+				<div class="season-details p-3" hidden="@(!IsExpanded)" style="background-color: red; min-height: 200px;">
 					<SerieDetails ActiveSeasonNumber="@ActiveSeason" Seasons="@DetailsDto.Seasons" SelectedSeason="HandleSeasonChange" EpisodesDetailsDto="@EpisodesDetails" />
 				</div>
 			</div>
 		</div>
 	</div>
-
-
 }
 
 @code {
