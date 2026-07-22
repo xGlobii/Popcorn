@@ -1,16 +1,18 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Data;
+using System.Text.Json.Serialization;
 
 namespace Popcorn.Shared.Dto
 {
 	public class MovieDetailsDto
 	{
 		public int Id { get; set; }
-		public string HomePage { get; set; } = string.Empty;
+		public string? HomePage { get; set; }
 		public string Overview { get; set; } = string.Empty;
 		public string PosterPath { get; set; } = string.Empty;
 		public string ReleaseDate { get; set; } = string.Empty;
 		public string Status { get; set; } = string.Empty;
 		public string Title { get; set; } = string.Empty;
+		public required IReadOnlyList<PersonDto> Cast { get; set; }
 	}
 
 	public class TvSerieDetailsDto
@@ -23,8 +25,9 @@ namespace Popcorn.Shared.Dto
 		public string Overview { get; set; } = string.Empty;
 		public string Status { get; set; } = string.Empty;
 		public string PosterPath { get; set; } = string.Empty;
-		public string HomePage { get; set; } = string.Empty;
+		public string? HomePage { get; set; }
 		public required IReadOnlyList<SeasonDto> Seasons { get; set; }
+		public required IReadOnlyList<PersonDto> Cast { get; set; }
 	}
 
 	public class SeasonDto
@@ -46,6 +49,15 @@ namespace Popcorn.Shared.Dto
 		public string Overview { get; set; } = string.Empty;
 		public string ImagePath { get; set; } = string.Empty;
 		public int EpisodeNumber { get; set; }
+		public required IReadOnlyList<PersonDto> GuestStars { get; set; }
+	}
+
+	public class PersonDto
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public string ProfilePath { get; set; } = string.Empty;
+		public string Character { get; set; } = string.Empty;
 	}
 
 	public class PersonDetailsDto
@@ -55,7 +67,7 @@ namespace Popcorn.Shared.Dto
 		public string Birthday { get; set; } = string.Empty;
 		public string Deathday { get; set; } = string.Empty;
 		public string Name { get; set; } = string.Empty;
-		public string Homepage { get; set; } = string.Empty;
+		public string? Homepage { get; set; }
 		public string PlaceOfBirth { get; set; } = string.Empty;
 		public string ProfilePath { get; set; } = string.Empty;
 		public string KnownForDepartment { get; set; } = string.Empty;

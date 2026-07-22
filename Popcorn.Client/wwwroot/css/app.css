@@ -113,3 +113,14 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.btn-action {
+    background-color: #FFD700;
+    color: #AA8F00;
+    font-weight: bold;
+}
+
+    .btn-action:hover {
+        transform: scale(1.02);
+        background-color: #FBD300;
+    }

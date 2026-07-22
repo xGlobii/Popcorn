@@ -18,6 +18,8 @@ namespace Popcorn.Api.Models
 		public string Status { get; set; } = string.Empty;
 		[JsonPropertyName("title")]
 		public string Title { get; set; } = string.Empty;
+		[JsonPropertyName("credits")]
+		public Credits Credits { get; set; } = new();
 	}
 
 	public class TmdbTvSerieDetails
@@ -42,6 +44,20 @@ namespace Popcorn.Api.Models
 		public string? HomePage { get; set; }
 		[JsonPropertyName("seasons")]
 		public List<Season> Seasons { get; set; } = new();
+		[JsonPropertyName("aggregate_credits")]
+		public AggregateCredits Credits { get; set; } = new();
+	}
+
+	public class Credits
+	{
+		[JsonPropertyName("cast")]
+		public List<SimplePerson> Cast { get; set; } = new();
+	}
+
+	public class AggregateCredits
+	{
+		[JsonPropertyName("cast")]
+		public List<TvSeriePerson> Cast { get; set; } = new();
 	}
 
 	public class Season
@@ -72,6 +88,42 @@ namespace Popcorn.Api.Models
 		public string ImagePath { get; set; } = string.Empty;
 		[JsonPropertyName("episode_number")]
 		public int EpisodeNumber { get; set; }
+		[JsonPropertyName("guest_stars")]
+		public List<SimplePerson> GuestStars { get; set; } = new();
+	}
+
+	public class TvSeriePerson
+	{
+		[JsonPropertyName("known_for_department")]
+		public string Department { get; set; } = string.Empty;
+		[JsonPropertyName("id")]
+		public int Id { get; set; }
+		[JsonPropertyName("name")]
+		public string Name { get; set; } = string.Empty;
+		[JsonPropertyName("profile_path")]
+		public string? ProfilePath { get; set; }
+		[JsonPropertyName("roles")]
+		public List<Role> Roles { get; set; } = new();
+	}
+
+	public class SimplePerson
+	{
+		[JsonPropertyName("known_for_department")]
+		public string Department { get; set; } = string.Empty;
+		[JsonPropertyName("id")]
+		public int Id { get; set; }
+		[JsonPropertyName("name")]
+		public string Name { get; set; } = string.Empty;
+		[JsonPropertyName("profile_path")]
+		public string? ProfilePath { get; set; }
+		[JsonPropertyName("character")]
+		public string Character { get; set; } = string.Empty;
+	}
+
+	public class Role
+	{
+		[JsonPropertyName("character")]
+		public string Character { get; set; } = string.Empty;
 	}
 
 	public class TmdbPersonDetails

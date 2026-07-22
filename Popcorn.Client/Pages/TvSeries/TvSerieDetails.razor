@@ -28,15 +28,18 @@ else
 			</div>
 		</div>
 		<div class="row">
+			<ActorsSlider Cast="@DetailsDto.Cast" />
+		</div>
+		<div class="row">
 			<div class="season-collapse">
 				<div class="collapse-btn py-2">
 					<button type="button" class="d-flex w-100 justify-content-between seasons-btn" @onclick="() => ToggleCollapse()">
-						<span class="px-3">Details</span>
+						<span class="px-3">Seasons</span>
 						<i class="bi @Icon px-3"></i>
 					</button>
 				</div>
 				<div class="season-details p-3" hidden="@(!IsExpanded)">
-					<SerieDetails ActiveSeasonNumber="@ActiveSeason" Seasons="@DetailsDto.Seasons" SelectedSeason="HandleSeasonChange" EpisodesDetailsDto="@EpisodesDetails" />
+					<SeasonDetails ActiveSeasonNumber="@ActiveSeason" Seasons="@DetailsDto.Seasons" SelectedSeason="HandleSeasonChange" EpisodesDetailsDto="@EpisodesDetails" />
 				</div>
 			</div>
 		</div>

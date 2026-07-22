@@ -1,0 +1,20 @@
+﻿@using Popcorn.Shared.Dto
+<div class="d-flex mb-3" style="overflow-x: auto; scroll-snap-type: x mandatory">
+	@foreach (var person in Cast)
+	{
+		<div class="card mx-1 flex-shrink-0" style="scroll-snap-align: start; width: clamp(120px, 35vw, 200px)">
+			<img src="@person.ProfilePath" class="card-img-top w-100" style="object-fit: cover;" alt="...">
+			<div class="card-body d-flex flex-column">
+				<h5 class="card-title">@person.Name</h5>
+				<p class="card-text text-secondary">@person.Character</p>
+				<a href="/people/@person.Id" class="btn btn-action mt-auto">View profile</a>
+			</div>
+		</div>
+	}
+</div>
+
+@code {
+	[EditorRequired]
+	[Parameter]
+	public IReadOnlyList<PersonDto> Cast { get; set; }
+}

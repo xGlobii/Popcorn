@@ -41,7 +41,7 @@ namespace Popcorn.Api.Services
 				Biography = result.Biography,
 				Birthday = result.Birthday == null ? "" : result.Birthday,
 				Deathday = result.Deathday == null ? "present" : result.Deathday,
-				Homepage = result.Homepage == null ? "" : result.Homepage,
+				Homepage = result.Homepage == null ? null : result.Homepage,
 				KnownForDepartment = result.KnownForDepartment,
 				Name = result.Name,
 				PlaceOfBirth = result.PlaceOfBirth,

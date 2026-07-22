@@ -1,6 +1,7 @@
 ﻿using Popcorn.Api.Models;
 using Popcorn.Shared.Dto;
 using System.Net;
+using System.Runtime;
 
 namespace Popcorn.Api.Services
 {
@@ -16,7 +17,7 @@ namespace Popcorn.Api.Services
 		public async Task<MovieDetailsDto?> GetMovieDetails(int id)
 		{
 			var client = _factory.CreateClient("TMDB");
-			var response = await client.GetAsync($"movie/{id}");
+			var response = await client.GetAsync($"movie/{id}?append_to_response=credits");
 
 			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
@@ -33,15 +34,32 @@ namespace Popcorn.Api.Services
 			if (result == null)
 				return null;
 
+			List<PersonDto> cast = new();
+
+			foreach(var person in result.Credits.Cast.Take(15))
+			{
+				if(person.Department == "Acting")
+				{
+					cast.Add(new PersonDto
+					{
+						Id = person.Id,
+						Name = person.Name,
+						ProfilePath = person.ProfilePath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{person.ProfilePath}",
+						Character = person.Character
+					});
+				}
+			}
+
 			return new MovieDetailsDto
 			{
 				Id = result.Id,
-				HomePage = result.HomePage == null ? "" : result.HomePage,
+				HomePage = result.HomePage == null ? null : result.HomePage,
 				Overview = result.Overview,
 				PosterPath = result.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.PosterPath}",
 				ReleaseDate = result.ReleaseDate,
 				Status = result.Status,
-				Title = result.Title
+				Title = result.Title,
+				Cast = cast
 			};
 		}
 	}
