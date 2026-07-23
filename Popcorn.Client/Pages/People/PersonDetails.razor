@@ -27,6 +27,33 @@ else
 				</DetailsTemplate>
 			</div>
 		</div>
+		<div class="row">
+			<div class="d-flex mb-3" style="overflow-x: auto; scroll-snap-type: x mandatory">
+				@if (CreditsPreview == null)
+				{
+					<Loading />
+				}
+				else
+				{
+					@foreach (var media in CreditsPreview)
+					{
+						<div class="card mx-1 flex-shrink-0" style="scroll-snap-align: start; width: clamp(120px, 35vw, 200px)">
+							<img src="@media.PosterPath" class="card-img-top w-100" style="object-fit: cover;" alt="...">
+							<div class="card-body d-flex flex-column">
+								<h5 class="card-title">@media.Title</h5>
+								<p class="card-text text-secondary">@media.MediaType</p>
+								<a href="/@(media.MediaType)s/@media.Id" class="btn btn-action mt-auto">View</a>
+							</div>
+						</div>
+					}
+					<div class="card mx-1 flex-shrink-0" style="scroll-snap-align: start; width: clamp(120px, 35vw, 200px)">
+						<div class="card-body d-flex flex-column justify-content-center">
+							<a href="/people/@Id/filmography" class="btn btn-action">View more</a>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
 	</div>
 }
 
@@ -35,10 +62,13 @@ else
 	public int Id { get; set; }
 
 	public PersonDetailsDto? DetailsDto { get; set; }
+	public IReadOnlyList<CreditsDto>? CreditsPreview { get; set; }
 
 	protected async override Task OnParametersSetAsync()
 	{
 		DetailsDto = null;
+		CreditsPreview = null;
 		DetailsDto = await HttpClient.GetFromJsonAsync<PersonDetailsDto>($"api/v1/people/{Id}");
+		CreditsPreview = await HttpClient.GetFromJsonAsync<IReadOnlyList<CreditsDto>>($"api/v1/people/{Id}/filmography-preview");
 	}
 }

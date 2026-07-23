@@ -1,16 +1,21 @@
-﻿using Popcorn.Api.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Popcorn.Api.Models;
 using Popcorn.Shared.Dto;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text.Json;
 
 namespace Popcorn.Api.Services
 {
 	public class TmdbPeopleService : IPeopleService
 	{
 		private readonly IHttpClientFactory _factory;
+		private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions();
 
 		public TmdbPeopleService(IHttpClientFactory factory)
 		{
 			_factory = factory;
+			_jsonOptions.AllowOutOfOrderMetadataProperties = true;
 		}
 
 		public async Task<PersonDetailsDto?> GetPersonDetails(int id)
@@ -67,6 +72,93 @@ namespace Popcorn.Api.Services
 				age -= 1;
 
 			return age;
+		}
+
+		public async Task<IEnumerable<CreditsDto>?> GetFilmographyPreview(int id)
+		{
+			CombinedCredits? credits = await GetCredits(id);
+
+			if (credits == null)
+				return null;
+
+			List<CreditsDto> dto = MapToDto(credits.Cast.OrderByDescending(c => c.VoteCount).Take(10));
+
+			return dto;
+		}
+
+		private async Task<CombinedCredits?> GetCredits(int id)
+		{
+			var client = _factory.CreateClient("TMDB");
+			var respond = await client.GetAsync($"person/{id}/combined_credits");
+
+			if (respond.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			if (!respond.IsSuccessStatusCode)
+			{
+				respond.EnsureSuccessStatusCode();
+			}
+
+			var result = await respond.Content.ReadFromJsonAsync<CombinedCredits>(_jsonOptions);
+
+			return result;
+		}
+
+		public async Task<CombinedCreditsDto?> GetFilmography(int id)
+		{
+			CombinedCredits? credits = await GetCredits(id);
+
+			if (credits == null)
+				return null;
+
+			List<CreditsDto> cast = MapToDto(credits.Cast);
+			List<CreditsDto> crew = MapToDto(credits.Crew);
+
+			return new CombinedCreditsDto
+			{
+				Cast = cast,
+				Crew = crew
+			};
+		}
+
+		private List<CreditsDto> MapToDto(IEnumerable<CreditsItem> respond)
+		{
+			List<CreditsDto>? dto = new();
+
+			foreach (var media in respond)
+			{
+				switch (media)
+				{
+					case MovieCredits movie:
+						dto.Add(new CreditsDto
+						{
+							Id = movie.Id,
+							Overview = movie.Overview == null ? "" : movie.Overview,
+							PosterPath = movie.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{movie.PosterPath}",
+							ReleaseDate = movie.ReleaseDate,
+							Title = movie.Title,
+							MediaType = "movie",
+							Job = movie.Job == null ? "Actor" : movie.Job
+						});
+						break;
+					case TvSerieCredits tvSerie:
+						dto.Add(new CreditsDto
+						{
+							Id = tvSerie.Id,
+							Overview = tvSerie.Overview == null ? "" : tvSerie.Overview,
+							PosterPath = tvSerie.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{tvSerie.PosterPath}",
+							ReleaseDate = tvSerie.AirDate,
+							Title = tvSerie.Name,
+							MediaType = "tv",
+							Job = tvSerie.Job == null ? "Actor" : tvSerie.Job
+						});
+						break;
+				}
+			}
+
+			return dto;
 		}
 	}
 }

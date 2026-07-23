@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Popcorn.Api.Models
 {
@@ -146,5 +147,46 @@ namespace Popcorn.Api.Models
 		public string? ProfilePath { get; set; }
 		[JsonPropertyName("known_for_department")]
 		public string KnownForDepartment { get; set; } = string.Empty;
+	}
+
+	public class CombinedCredits
+	{
+		[JsonPropertyName("crew")]
+		public List<CreditsItem> Crew { get; set; } = new();
+		[JsonPropertyName("cast")]
+		public List<CreditsItem> Cast { get; set; } = new();
+	}
+
+	[JsonPolymorphic(TypeDiscriminatorPropertyName = "media_type")]
+	[JsonDerivedType(typeof(MovieCredits), typeDiscriminator: "movie")]
+	[JsonDerivedType(typeof(TvSerieCredits), typeDiscriminator: "tv")]
+	public abstract class CreditsItem
+	{
+		[JsonPropertyName("id")]
+		public int Id { get; set; }
+		[JsonPropertyName("overview")]
+		public string? Overview { get; set; }
+		[JsonPropertyName("vote_count")]
+		public int VoteCount { get; set; }
+		[JsonPropertyName("poster_path")]
+		public string? PosterPath { get; set; }
+		[JsonPropertyName("job")]
+		public string? Job { get; set; }
+	}
+
+	public class MovieCredits : CreditsItem
+	{
+		[JsonPropertyName("title")]
+		public string Title { get; set; } = string.Empty;
+		[JsonPropertyName("release_date")]
+		public string ReleaseDate { get; set; } = string.Empty;
+	}
+
+	public class TvSerieCredits : CreditsItem
+	{
+		[JsonPropertyName("name")]
+		public string Name { get; set; } = string.Empty;
+		[JsonPropertyName("first_air_date")]
+		public string AirDate { get; set; } = string.Empty;
 	}
 }

@@ -73,4 +73,21 @@ namespace Popcorn.Shared.Dto
 		public string KnownForDepartment { get; set; } = string.Empty;
 		public int? Age { get; set; }
 	}
+
+	public class CombinedCreditsDto
+	{
+		public required IReadOnlyList<CreditsDto> Crew { get; set; }
+		public required IReadOnlyList<CreditsDto> Cast { get; set; }
+	}
+
+	public class CreditsDto
+	{
+		public int Id { get; set; }
+		public string Overview { get; set; } = string.Empty;
+		public string PosterPath { get; set; } = string.Empty;
+		public string Title { get; set; } = string.Empty;
+		public string ReleaseDate { get; set; } = string.Empty;
+		public string MediaType { get; set; } = string.Empty;
+		public string Job { get; set; } = string.Empty;
+	}
 }
