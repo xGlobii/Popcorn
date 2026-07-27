@@ -1,10 +1,62 @@
 ﻿@page "/"
+@using Popcorn.Shared.Dto
+@inject HttpClient HttpClient
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-@code {
+@if (dto == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="container mt-4">
+		<div class="row justify-content-end hero-banner w-75 mx-auto" style="--poster-url: url(@dto.Discover.ImagePath);">
+			<div class="col-7 hero-details">
+				<p class="mt-5">
+					<span class="badge p-2">Discover spotlight</span>
+				</p>
+				<p>
+					<h2 class="fw-bold">@dto.Discover.Name</h2>
+				</p>
+				<p class="hero-overview">
+					@dto.Discover.Overview
+				</p>
+				<div class="btn btn-action p-2">
+					<a href="@dto.Discover.Url" class="text-decoration-none text-reset">
+						View details <i class="bi bi-arrow-right"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="row mx-auto mt-4 w-75 justify-content-center now-playing-section">
+			<h3 class="mb-3 mt-3 px-4">Now in cinemas</h3>
+			@foreach (var media in dto.NowPlaying)
+			{
+				<div class="col-6">
+					<div class="card mb-3">
+						<div class="row g-0">
+							<div class="col-4">
+								<img src="@media.ImagePath" class="img-fluid rounded-start" alt="...">
+							</div>
+							<div class="col-8">
+								<div class="card-body d-flex flex-column">
+									<h5 class="card-title">@media.Name</h5>
+									<p class="card-text now-playing-overview">@media.Overview</p>
+									<a href="@media.Url" class="btn btn-action align-self-center">View details</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
 }
 
-Welcome to your new app.
+@code {
+	MainPageDto? dto = null;
+
+	protected async override Task OnInitializedAsync()
+	{
+		dto = await HttpClient.GetFromJsonAsync<MainPageDto>("api/v1/main");
+	}
+}

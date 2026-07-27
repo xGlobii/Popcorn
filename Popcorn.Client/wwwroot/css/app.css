@@ -1,5 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f1f1ee;
 }
 
 h1:focus {
@@ -123,4 +124,5 @@ code {
     .btn-action:hover {
         transform: scale(1.02);
         background-color: #FBD300;
+        color: #997E00;
     }

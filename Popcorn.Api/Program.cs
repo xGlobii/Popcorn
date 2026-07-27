@@ -31,6 +31,7 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<IMoviesService, TmdbMoviesService>();
 			builder.Services.AddScoped<ITvSeriesService, TmdbTvSeriesService>();
 			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
+			builder.Services.AddScoped<IMainService, TmdbMainService>();
 
 			builder.Services.AddCors(options =>
 			{
