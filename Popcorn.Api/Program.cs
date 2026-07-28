@@ -1,5 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using Popcorn.Api.Data;
 using Popcorn.Api.Services;
 using Scalar.AspNetCore;
 using System.Net.Http.Headers;
@@ -32,14 +34,18 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<ITvSeriesService, TmdbTvSeriesService>();
 			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
 			builder.Services.AddScoped<IMainService, TmdbMainService>();
+			builder.Services.AddScoped<IAuthService, AuthService>();
 
 			builder.Services.AddCors(options =>
 			{
 				options.AddPolicy(name: corsPolicy, policy =>
 				{
-					policy.WithOrigins("https://localhost:7224");
+					policy.WithOrigins("https://localhost:7224").AllowAnyMethod().AllowAnyHeader();
 				});
 			});
+
+			builder.Services.AddDbContext<AppDbContext>(options =>
+			options.UseSqlServer(builder.Configuration["ConnectionStrings:DbConnectionString"]));
 
 			var app = builder.Build();
 

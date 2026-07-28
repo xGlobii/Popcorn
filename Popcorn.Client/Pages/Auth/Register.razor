@@ -1,0 +1,70 @@
+﻿@page "/register"
+@using Popcorn.Shared.Dto
+@inject HttpClient HttpClient
+
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-4 mx-auto">
+			<EditForm Model="Dto" OnValidSubmit="Submit">
+				<DataAnnotationsValidator />
+				@if(ShowAlert)
+				{
+					<div class="alert alert-@AlertColor" role="alert">
+						@AlertContent
+					</div>
+				}
+				<div class="mb-3">
+					<label for="InputUsername" class="form-label">Username</label>
+					<InputText type="text" class="form-control" id="InputUsername" @bind-Value="Dto.Username" />
+					<ValidationMessage For="() => Dto.Username" />
+				</div>
+				<div class="mb-3">
+					<label for="InputEmail" class="form-label">Email address</label>
+					<InputText type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" @bind-Value="Dto.Email" />
+					<ValidationMessage For="() => Dto.Email" />
+					<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+				</div>
+				<div class="mb-3">
+					<label for="InputPassword" class="form-label">Password</label>
+					<InputText type="password" class="form-control" id="InputPassword" @bind-Value="Dto.Password" />
+					<ValidationMessage For="() => Dto.Password" />
+				</div>
+				<div class="mb-3">
+					<label for="InputConfirmPassword" class="form-label">Confirm Password</label>
+					<InputText type="password" class="form-control" id="InputConfirmPassword" @bind-Value="Dto.ConfirmPassword" />
+					<ValidationMessage For="() => Dto.ConfirmPassword" />
+				</div>
+				<div class="mb-3 d-flex justify-content-center">
+					<button type="submit" class="btn btn-action">Submit</button>
+				</div>
+			</EditForm>
+		</div>
+	</div>
+</div>
+
+@code {
+	RegisterDto Dto { get; set; } = new();
+
+	public bool ShowAlert { get; set; } = false;
+	public string AlertContent { get; set; } = string.Empty;
+	public string AlertColor { get; set; } = string.Empty;
+
+	private async Task Submit()
+	{
+		ShowAlert = false;
+		var result = await HttpClient.PostAsJsonAsync<RegisterDto>("api/v1/register", Dto);
+
+		if(result.IsSuccessStatusCode)
+		{
+			ShowAlert = true;
+			AlertContent = "Registered successfully";
+			AlertColor = "success";
+		}
+		else if(result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+		{
+			ShowAlert = true;
+			AlertContent = "An error has occurred";
+			AlertColor = "danger";
+		}
+	}
+}
