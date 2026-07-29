@@ -7,5 +7,6 @@
 		public string Email { get; set; } = string.Empty;
 		public string HashedPassword { get; set; } = string.Empty;
 		public DateTime CreationTime { get; set; } = DateTime.UtcNow;
+		public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
 	}
 }

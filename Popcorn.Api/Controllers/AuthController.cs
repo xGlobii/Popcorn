@@ -26,5 +26,17 @@ namespace Popcorn.Api.Controllers
 			else
 				return BadRequest();
 		}
+
+		[HttpPost]
+		[Route("login")]
+		public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto dto)
+		{
+			var result = await _authService.Login(dto);
+
+			if (result != null)
+				return Ok(result);
+			else
+				return Unauthorized();
+		}
 	}
 }

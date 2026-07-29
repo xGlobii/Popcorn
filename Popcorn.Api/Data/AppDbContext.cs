@@ -8,6 +8,7 @@ namespace Popcorn.Api.Data
 		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
 		public DbSet<User> Users { get; set; }
+		public DbSet<UserSession> UserSessions { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -30,6 +31,10 @@ namespace Popcorn.Api.Data
 				.Property(u => u.Username)
 				.HasMaxLength(50)
 				.IsRequired();
+			modelBuilder.Entity<UserSession>()
+				.HasOne(u => u.User)
+				.WithMany(u => u.Sessions)
+				.HasForeignKey(u => u.UserId);
 		}
 	}
 }

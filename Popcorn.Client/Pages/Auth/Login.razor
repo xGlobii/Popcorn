@@ -1,0 +1,59 @@
+﻿@page "/login"
+@using Popcorn.Shared.Dto
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-4 mx-auto">
+			<EditForm Model="Dto" OnValidSubmit="Submit">
+				<DataAnnotationsValidator />
+				@if (ShowAlert)
+				{
+					<div class="alert alert-@AlertColor" role="alert">
+						@AlertContent
+					</div>
+				}
+				<div class="mb-3">
+					<label for="InputEmail" class="form-label">Email address</label>
+					<InputText type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" @bind-Value="Dto.Email" />
+					<ValidationMessage For="() => Dto.Email" />
+					<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+				</div>
+				<div class="mb-3">
+					<label for="InputPassword" class="form-label">Password</label>
+					<InputText type="password" class="form-control" id="InputPassword" @bind-Value="Dto.Password" />
+					<ValidationMessage For="() => Dto.Password" />
+				</div>
+				<div class="mb-3 d-flex justify-content-center">
+					<button type="submit" class="btn btn-action">Submit</button>
+				</div>
+			</EditForm>
+		</div>
+	</div>
+</div>
+
+@code {
+	LoginDto Dto { get; set; } = new();
+
+	public bool ShowAlert { get; set; } = false;
+	public string AlertContent { get; set; } = string.Empty;
+	public string AlertColor { get; set; } = string.Empty;
+
+	private async Task Submit()
+	{
+		ShowAlert = false;
+		var result = await HttpClient.PostAsJsonAsync<LoginDto>("api/v1/login", Dto);
+
+		if(result.IsSuccessStatusCode)
+		{
+			NavigationManager.NavigateTo("/");
+		}
+		else if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+		{
+			ShowAlert = true;
+			AlertContent = "Wrong email or/and password";
+			AlertColor = "danger";
+		}
+	}
+}
