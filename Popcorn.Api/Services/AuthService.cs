@@ -51,7 +51,7 @@ namespace Popcorn.Api.Services
 			}
 		}
 
-		public async Task<AuthResponseDto?> Login(LoginDto dto)
+		public async Task<AuthTokensDto?> Login(LoginDto dto)
 		{
 			var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
@@ -81,7 +81,7 @@ namespace Popcorn.Api.Services
 
 					await _dbContext.SaveChangesAsync();
 
-					return new AuthResponseDto
+					return new AuthTokensDto
 					{
 						RefreshToken = refreshToken,
 						Token = token

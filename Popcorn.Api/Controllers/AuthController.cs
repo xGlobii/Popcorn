@@ -29,7 +29,7 @@ namespace Popcorn.Api.Controllers
 
 		[HttpPost]
 		[Route("login")]
-		public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto dto)
+		public async Task<ActionResult<AuthTokensDto>> Login([FromBody] LoginDto dto)
 		{
 			var result = await _authService.Login(dto);
 

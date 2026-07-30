@@ -30,7 +30,7 @@ namespace Popcorn.Shared.Dto
 		public string Password { get; set; } = string.Empty;
 	}
 
-	public class AuthResponseDto
+	public class AuthTokensDto
 	{
 		public string Token { get; set; } = string.Empty;
 		public string RefreshToken { get; set; } = string.Empty;
