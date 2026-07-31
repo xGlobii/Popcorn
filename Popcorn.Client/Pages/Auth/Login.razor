@@ -2,6 +2,7 @@
 @using Popcorn.Shared.Dto
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container mt-5">
 	<div class="row">
@@ -43,11 +44,23 @@
 	private async Task Submit()
 	{
 		ShowAlert = false;
-		var result = await HttpClient.PostAsJsonAsync<LoginDto>("api/v1/login", Dto);
+		var result = await HttpClient.PostAsJsonAsync<LoginDto>("api/v1/auth/login", Dto);
+		AuthTokensDto? tokens = await result.Content.ReadFromJsonAsync<AuthTokensDto>();
 
-		if(result.IsSuccessStatusCode)
+		if (result.IsSuccessStatusCode)
 		{
-			NavigationManager.NavigateTo("/");
+			if (tokens == null)
+			{
+				ShowAlert = true;
+				AlertContent = "An error has occurred, try again later!";
+				AlertColor = "danger";
+			}
+			else
+			{
+				await JSRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", tokens.Token);
+				await JSRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", tokens.RefreshToken);
+				NavigationManager.NavigateTo("/");
+			}
 		}
 		else if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
 		{

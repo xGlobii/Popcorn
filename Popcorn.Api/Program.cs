@@ -1,10 +1,14 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Popcorn.Api.Data;
 using Popcorn.Api.Services;
 using Scalar.AspNetCore;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace Popcorn.Api
 {
@@ -15,6 +19,13 @@ namespace Popcorn.Api
 			var builder = WebApplication.CreateBuilder(args);
 
 			var corsPolicy = "PopcornApiPolicy";
+
+			var key = builder.Configuration["Auth:SecurityKey"];
+
+			if (key == null)
+				throw new ArgumentNullException("Security key is not set");
+
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
 			// Add services to the container.
 
@@ -35,6 +46,21 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
 			builder.Services.AddScoped<IMainService, TmdbMainService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
+
+			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+			{
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateIssuer = true,
+					ValidIssuer = "Popcorn",
+					ValidateAudience = true,
+					ValidAudience = "Popcorn.Api",
+					ValidateLifetime = true,
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = securityKey,
+					ClockSkew = TimeSpan.Zero
+				};
+			});
 
 			builder.Services.AddCors(options =>
 			{
@@ -60,6 +86,7 @@ namespace Popcorn.Api
 
 			app.UseCors(corsPolicy);
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllers();

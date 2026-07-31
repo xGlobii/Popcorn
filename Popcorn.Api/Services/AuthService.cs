@@ -8,6 +8,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Reflection.Metadata;
 
 namespace Popcorn.Api.Services
 {
@@ -65,16 +66,13 @@ namespace Popcorn.Api.Services
 				if (string.IsNullOrEmpty(token))
 					return null;
 
-				byte[] randomBytes = new byte[32];
-				RandomNumberGenerator.Fill(randomBytes);
-				string refreshToken = Convert.ToBase64String(randomBytes);
-				string hashedToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(refreshToken)));
+				var refreshToken = GenerateRefreshToken();
 
 				try
 				{
 					await _dbContext.UserSessions.AddAsync(new UserSession
 					{
-						RefreshToken = hashedToken,
+						RefreshToken = refreshToken.hashedToken,
 						ExpireAt = DateTime.UtcNow.AddDays(7),
 						User = user
 					});
@@ -83,7 +81,7 @@ namespace Popcorn.Api.Services
 
 					return new AuthTokensDto
 					{
-						RefreshToken = refreshToken,
+						RefreshToken = refreshToken.refreshToken,
 						Token = token
 					};
 				}
@@ -109,8 +107,8 @@ namespace Popcorn.Api.Services
 			claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userId));
 
 			var payload = new JwtPayload(
-				issuer: null,
-				audience: null,
+				issuer: "Popcorn",
+				audience: "Popcorn.Api",
 				claims: claims,
 				notBefore: DateTime.UtcNow,
 				expires: DateTime.UtcNow.AddMinutes(15));
@@ -120,6 +118,84 @@ namespace Popcorn.Api.Services
 			var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
 
 			return token;
+		}
+
+		private (string refreshToken, string hashedToken) GenerateRefreshToken()
+		{
+			byte[] randomBytes = new byte[32];
+			RandomNumberGenerator.Fill(randomBytes);
+			string refreshToken = Convert.ToBase64String(randomBytes);
+			string hashedToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(refreshToken)));
+
+			return (refreshToken, hashedToken);
+		}
+
+		public async Task<AuthTokensDto?> Refresh(AuthTokensDto dto)
+		{
+			JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+
+			var key = _config["Auth:SecurityKey"];
+			if (key == null)
+				return null;
+
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+			var validation = await tokenHandler.ValidateTokenAsync(dto.Token, new TokenValidationParameters
+			{
+				ValidateIssuer = true,
+				ValidIssuer = "Popcorn",
+				ValidateAudience = true,
+				ValidAudience = "Popcorn.Api",
+				ValidateLifetime = false,
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = securityKey
+			});
+
+			if(!validation.IsValid)
+			{
+				return null;
+			}
+
+			var token = tokenHandler.ReadJwtToken(dto.Token);
+
+			string refreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(dto.RefreshToken)));
+
+			if (!Guid.TryParse(token.Payload.Sub, out Guid userId))
+			{
+				return null;
+			}
+
+			var result = await _dbContext.UserSessions.FirstOrDefaultAsync(us => us.UserId == userId && us.ExpireAt > DateTime.UtcNow && us.RefreshToken == refreshToken && us.IsRevoked == false);
+
+			if (result == null)
+				return null;
+
+			var newToken = GenerateJwtToken(token.Payload.Sub);
+			var newRefreshToken = GenerateRefreshToken();
+
+			try
+			{
+				result.IsRevoked = true;
+
+				await _dbContext.UserSessions.AddAsync(new UserSession
+				{
+					RefreshToken = newRefreshToken.hashedToken,
+					ExpireAt = DateTime.UtcNow.AddDays(7),
+					UserId = userId
+				});
+
+				await _dbContext.SaveChangesAsync();
+
+				return new AuthTokensDto
+				{
+					RefreshToken = newRefreshToken.refreshToken,
+					Token = newToken
+				};
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 	}
 }

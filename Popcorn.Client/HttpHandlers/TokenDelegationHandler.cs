@@ -10,9 +10,9 @@ namespace Popcorn.Client.HttpHandlers
 		private readonly IJSRuntime _js;
 		private readonly List<string> _blackList = new List<string>()
 		{
-			"/api/auth/login",
-			"/api/auth/register",
-			"/api/auth/refresh"
+			"/api/v1/auth/login",
+			"/api/v1/auth/register",
+			"/api/v1/auth/refresh"
 		};
 
 		public TokenDelegationHandler(IJSRuntime js)
@@ -58,7 +58,11 @@ namespace Popcorn.Client.HttpHandlers
 					AuthTokensDto? newTokens = await tokenResponse.Content.ReadFromJsonAsync<AuthTokensDto>();
 
 					if (newTokens == null)
+					{
+						await _js.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
+						await _js.InvokeVoidAsync("localStorage.removeItem", "accessToken");
 						return response;
+					}
 
 					await _js.InvokeVoidAsync("localStorage.setItem", "refreshToken", newTokens.RefreshToken);
 					await _js.InvokeVoidAsync("localStorage.setItem", "accessToken", newTokens.Token);
@@ -89,6 +93,11 @@ namespace Popcorn.Client.HttpHandlers
 
 					newMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newTokens.Token);
 					response = await base.SendAsync(newMessage, cancellationToken);
+				}
+				else
+				{
+					await _js.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
+					await _js.InvokeVoidAsync("localStorage.removeItem", "accessToken");
 				}
 			}
 

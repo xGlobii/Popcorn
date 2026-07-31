@@ -52,7 +52,7 @@
 	private async Task Submit()
 	{
 		ShowAlert = false;
-		var result = await HttpClient.PostAsJsonAsync<RegisterDto>("api/v1/register", Dto);
+		var result = await HttpClient.PostAsJsonAsync<RegisterDto>("api/v1/auth/register", Dto);
 
 		if(result.IsSuccessStatusCode)
 		{
