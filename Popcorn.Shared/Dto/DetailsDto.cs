@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Popcorn.Shared.Enums;
+using System.Data;
 using System.Text.Json.Serialization;
 
 namespace Popcorn.Shared.Dto
@@ -12,6 +13,7 @@ namespace Popcorn.Shared.Dto
 		public string ReleaseDate { get; set; } = string.Empty;
 		public string Status { get; set; } = string.Empty;
 		public string Title { get; set; } = string.Empty;
+		public ActivityStatus MediaStatus { get; set; } = ActivityStatus.None;
 		public required IReadOnlyList<PersonDto> Cast { get; set; }
 	}
 
@@ -26,6 +28,7 @@ namespace Popcorn.Shared.Dto
 		public string Status { get; set; } = string.Empty;
 		public string PosterPath { get; set; } = string.Empty;
 		public string? HomePage { get; set; }
+		public ActivityStatus MediaStatus { get; set; } = ActivityStatus.None;
 		public required IReadOnlyList<SeasonDto> Seasons { get; set; }
 		public required IReadOnlyList<PersonDto> Cast { get; set; }
 	}

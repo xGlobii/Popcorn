@@ -46,6 +46,7 @@ namespace Popcorn.Api
 			builder.Services.AddScoped<IPeopleService, TmdbPeopleService>();
 			builder.Services.AddScoped<IMainService, TmdbMainService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
+			builder.Services.AddScoped<IActivityService, ActivityService>();
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{

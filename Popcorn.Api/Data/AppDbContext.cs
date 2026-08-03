@@ -9,6 +9,8 @@ namespace Popcorn.Api.Data
 
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserSession> UserSessions { get; set; }
+		public DbSet<ActivityItem> Activities { get; set; }
+		public DbSet<TmdbMedia> MediaItem { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -35,6 +37,19 @@ namespace Popcorn.Api.Data
 				.HasOne(u => u.User)
 				.WithMany(u => u.Sessions)
 				.HasForeignKey(u => u.UserId);
+
+			modelBuilder.Entity<ActivityItem>()
+				.HasOne(u => u.User)
+				.WithMany(u => u.Activities)
+				.HasForeignKey(u => u.UserId);
+			modelBuilder.Entity<ActivityItem>()
+				.HasOne(u => u.MediaItem)
+				.WithMany(u => u.UserMediaItems)
+				.HasForeignKey(u => new { u.MediaType, u.TmdbId });
+			modelBuilder.Entity<TmdbMedia>()
+				.HasKey(u => new { u.MediaType, u.TmdbId });
+			modelBuilder.Entity<ActivityItem>()
+				.HasKey(u => new { u.MediaType, u.TmdbId, u.UserId });
 		}
 	}
 }

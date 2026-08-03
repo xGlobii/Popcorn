@@ -8,5 +8,6 @@
 		public string HashedPassword { get; set; } = string.Empty;
 		public DateTime CreationTime { get; set; } = DateTime.UtcNow;
 		public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+		public ICollection<ActivityItem> Activities { get; set; } = new List<ActivityItem>();
 	}
 }

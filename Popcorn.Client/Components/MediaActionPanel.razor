@@ -1,15 +1,19 @@
-﻿<ActionButton ButtonPressed="ManageWatchlist" ButtonText="@WatchlistButtonText" IsLoading="@WatchlistIsLoading" Icon="@WatchListIcon" Style="@WatchListStyle" />
+﻿@using Popcorn.Shared.Dto
+@using Popcorn.Shared.Enums
+@inject HttpClient HttpClient
+
+<ActionButton ButtonPressed="ManageWatchlist" ButtonText="@WatchlistButtonText" IsLoading="@WatchlistIsLoading" Icon="@WatchListIcon" Style="@WatchListStyle" />
 <ActionButton ButtonPressed="ManageWatched" ButtonText="@WatchedButtonText" IsLoading="@WatchedIsLoading" Icon="@WatchedIcon" />
 
 @code {
 	public bool WatchlistIsLoading { get; set; } = false;
-	public string WatchlistButtonText { get; set; } = "Add to watchlist";
-	public string WatchListIcon { get; set; } = "bi-bookmark";
+	public string WatchlistButtonText { get; set; } = string.Empty;
+	public string WatchListIcon { get; set; } = string.Empty;
 	public string WatchListStyle { get; set; } = "watchlist-btn";
 
 	public bool WatchedIsLoading { get; set; } = false;
-	public string WatchedButtonText { get; set; } = "Mark as watched";
-	public string WatchedIcon { get; set; } = "bi-eye";
+	public string WatchedButtonText { get; set; } = string.Empty;
+	public string WatchedIcon { get; set; } = string.Empty;
 
 	[EditorRequired]
 	[Parameter]
@@ -17,32 +21,111 @@
 	[EditorRequired]
 	[Parameter]
 	public string MediaType { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public ActivityStatus InitialStatus { get; set; }
+	[EditorRequired]
+	[Parameter]
+	public string Title { get; set; } = string.Empty;
+
+	private ActivityStatus _localStatus = ActivityStatus.None;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		_localStatus = InitialStatus;
+
+		SetButtonsText();
+	}
+
+	private void SetButtonsText()
+	{
+		WatchlistButtonText = "Add to watchlist";
+		WatchListIcon = "bi-bookmark";
+		WatchedButtonText = "Mark as watched";
+		WatchedIcon = "bi-eye";
+
+		if (_localStatus == ActivityStatus.ToWatch)
+		{
+			WatchlistButtonText = "Remove from watchlist";
+			WatchListIcon = "bi-bookmark-fill";
+		}
+		else if (_localStatus == ActivityStatus.Watched)
+		{
+			WatchedButtonText = "Mark as non watched";
+			WatchedIcon = "bi-check-circle";
+		}
+	}
 
 	private async Task ManageWatchlist()
 	{
 		WatchlistIsLoading = true;
+		if (_localStatus == ActivityStatus.ToWatch)
+		{
+			var result = await HttpClient.DeleteAsync($"api/v1/activity/{MediaType}/{MediaId}");
 
-		// Call api
-		await Task.Delay(1000);
-		// await HttpClient.PostAsync($"api/v1/{MediaType}s/{MediaId}/watchlist");
+			if (result.IsSuccessStatusCode)
+			{
+				_localStatus = ActivityStatus.None;
+			}
+		}
+		else
+		{
+			ActivityDto dto = new ActivityDto
+			{
+				MediaType = MediaType,
+				Status = ActivityStatus.ToWatch,
+				Title = Title,
+				TmdbId = MediaId
+			};
 
-		// Change button state
+			Console.WriteLine("PRZED");
+
+			var result = await HttpClient.PutAsJsonAsync<ActivityDto>($"api/v1/activity", dto);
+
+			Console.WriteLine("PO");
+
+			if (result.IsSuccessStatusCode)
+			{
+				_localStatus = ActivityStatus.ToWatch;
+			}
+		}
 		WatchlistIsLoading = false;
-		WatchlistButtonText = "Remove from watchlist";
-		WatchListIcon = "bi-bookmark-fill";
+
+		SetButtonsText();
 	}
 
 	private async Task ManageWatched()
 	{
 		WatchedIsLoading = true;
+		if (_localStatus == ActivityStatus.Watched)
+		{
+			var result = await HttpClient.DeleteAsync($"api/v1/activity/{MediaType}/{MediaId}");
 
-		// Call api
-		await Task.Delay(1000);
-		// await HttpClient.PostAsync($"api/v1/{MediaType}s/{MediaId}/watched");
+			if (result.IsSuccessStatusCode)
+			{
+				_localStatus = ActivityStatus.None;
+			}
+		}
+		else
+		{
+			ActivityDto dto = new ActivityDto
+			{
+				MediaType = MediaType,
+				Status = ActivityStatus.Watched,
+				Title = Title,
+				TmdbId = MediaId
+			};
 
-		// Change button state
+			var result = await HttpClient.PutAsJsonAsync<ActivityDto>($"api/v1/activity", dto);
+
+			if (result.IsSuccessStatusCode)
+			{
+				_localStatus = ActivityStatus.Watched;
+			}
+
+		}
 		WatchedIsLoading = false;
-		WatchedButtonText = "Mark as non watched";
-		WatchedIcon = "bi-check-circle";
+
+		SetButtonsText();
 	}
 }
