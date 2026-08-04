@@ -1,19 +1,25 @@
-﻿using Popcorn.Api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Popcorn.Api.Data;
+using Popcorn.Api.Models;
 using Popcorn.Shared.Dto;
+using Popcorn.Shared.Enums;
 using System.Net;
+using Popcorn.Api.Models.Entities;
 
 namespace Popcorn.Api.Services
 {
 	public class TmdbTvSeriesService : ITvSeriesService
 	{
 		private readonly IHttpClientFactory _factory;
+		private readonly AppDbContext _dbContext;
 
-		public TmdbTvSeriesService(IHttpClientFactory factory)
+		public TmdbTvSeriesService(IHttpClientFactory factory, AppDbContext dbContext)
 		{
 			_factory = factory;
+			_dbContext = dbContext;
 		}
 
-		public async Task<TvSerieDetailsDto?> GetTvSerieDetails(int id)
+		public async Task<TvSerieDetailsDto?> GetTvSerieDetails(int id, Guid userId)
 		{
 			var client = _factory.CreateClient("TMDB");
 			var response = await client.GetAsync($"tv/{id}?append_to_response=aggregate_credits");
@@ -64,6 +70,23 @@ namespace Popcorn.Api.Services
 				}
 			}
 
+			ActivityStatus status = ActivityStatus.None;
+
+			if (userId != Guid.Empty)
+			{
+				var media = await _dbContext.Activities.FirstOrDefaultAsync(a => a.UserId == userId && a.MediaType == "tv" && a.TmdbId == id);
+
+				if(media != null)
+				{
+					status = media.Status switch
+					{
+						Status.Watched => ActivityStatus.Watched,
+						Status.ToWatch => ActivityStatus.ToWatch,
+						_ => throw new NotImplementedException()
+					};
+				}
+			}
+
 			return new TvSerieDetailsDto
 			{
 				Id = result.Id,
@@ -76,7 +99,8 @@ namespace Popcorn.Api.Services
 				PosterPath = result.PosterPath == null ? "placeholder" : $"https://image.tmdb.org/t/p/w500{result.PosterPath}",
 				HomePage = result.HomePage == null ? null : result.HomePage,
 				Seasons = seasons,
-				Cast = cast
+				Cast = cast,
+				MediaStatus = status
 			};
 		}
 

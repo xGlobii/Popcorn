@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Services;
 using Popcorn.Shared.Dto;
+using System.Security.Claims;
 
 namespace Popcorn.Api.Controllers
 {
@@ -19,7 +20,9 @@ namespace Popcorn.Api.Controllers
 		[Route("{id}")]
 		public async Task<ActionResult<MovieDetailsDto>> Get([FromRoute] int id)
 		{
-			var result = await _moviesService.GetMovieDetails(id);
+			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
+
+			var result = await _moviesService.GetMovieDetails(id, userId);
 
 			if (result != null)
 				return Ok(result);

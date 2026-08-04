@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Popcorn.Client.HttpHandlers;
+using Popcorn.Client.Services;
 
 namespace Popcorn.Client
 {
@@ -17,6 +19,11 @@ namespace Popcorn.Client
 			builder.Services.AddHttpClient("Api", options =>
 			options.BaseAddress = new Uri("https://localhost:7177"))
 				.AddHttpMessageHandler<TokenDelegationHandler>();
+
+			builder.Services.AddAuthorizationCore();
+			builder.Services.AddScoped<TokenAuthenticationStateProvider>();
+			builder.Services.AddScoped<AuthenticationStateProvider>(provider => 
+			provider.GetRequiredService<TokenAuthenticationStateProvider>());
 
 			builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
 

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Services;
 using Popcorn.Shared.Dto;
+using System.Security.Claims;
 
 namespace Popcorn.Api.Controllers
 {
@@ -49,6 +51,21 @@ namespace Popcorn.Api.Controllers
 				return Ok(result);
 			else
 				return Unauthorized();
+		}
+
+		[Authorize]
+		[HttpPost]
+		[Route("logout")]
+		public async Task<ActionResult> Logout()
+		{
+			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
+
+			var result = await _authService.Logout(userId);
+
+			if (result)
+				return Ok();
+			else
+				return BadRequest();
 		}
 	}
 }

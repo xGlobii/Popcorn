@@ -197,5 +197,19 @@ namespace Popcorn.Api.Services
 				return null;
 			}
 		}
+
+		public async Task<bool> Logout(Guid userId)
+		{
+			try
+			{
+				await _dbContext.UserSessions.Where(u => u.UserId == userId && u.IsRevoked == false).ExecuteUpdateAsync(setters => setters.SetProperty(p => p.IsRevoked, true));
+
+				return true;
+			}
+			catch(Exception)
+			{
+				return false;
+			}
+		}
 	}
 }

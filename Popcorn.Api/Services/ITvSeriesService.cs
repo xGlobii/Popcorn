@@ -4,7 +4,7 @@ namespace Popcorn.Api.Services
 {
 	public interface ITvSeriesService
 	{
-		public Task<TvSerieDetailsDto?> GetTvSerieDetails(int id);
+		public Task<TvSerieDetailsDto?> GetTvSerieDetails(int id, Guid userId);
 		public Task<EpisodesDetailsDto?> GetEpisodesDetails(int id, int seasonNumber);
 	}
 }

@@ -4,6 +4,6 @@ namespace Popcorn.Api.Services
 {
 	public interface IMoviesService
 	{
-		public Task<MovieDetailsDto?> GetMovieDetails(int id);
+		public Task<MovieDetailsDto?> GetMovieDetails(int id, Guid userId);
 	}
 }
