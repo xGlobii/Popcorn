@@ -14,5 +14,6 @@
 		public Guid UserId { get; set; }
 		public User? User { get; set; }
 		public Status Status { get; set; }
+		public DateOnly AddedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 	}
 }

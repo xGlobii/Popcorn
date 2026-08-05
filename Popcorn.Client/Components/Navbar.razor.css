@@ -27,3 +27,12 @@
     padding: 10px 20px 10px 20px;
     font-weight: bold;
 }
+
+::deep .nav-item .active {
+    color: #C9A900;
+    font-weight: bold;
+}
+
+.logo{
+    height: 40px;
+}

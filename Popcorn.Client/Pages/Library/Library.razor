@@ -1,0 +1,46 @@
+﻿@page "/library"
+@using Popcorn.Shared.Dto
+@attribute [Authorize]
+@inject HttpClient HttpClient
+
+@if (Dto == null)
+{
+	<Loading />
+}
+else if (!Dto.Any())
+{
+	<h2>Nothing to display here</h2>
+}
+else
+{
+	<div class="container">
+		<div class="row mt-4" style="border: 3px solid red; min-height: 500px;">
+			<div class="col-8 mx-auto" style="border: 3px solid green; min-height: 500px;">
+				<div class="card">
+					<ul class="list-group list-group-flush">
+						@foreach (var item in Dto)
+						{
+							<li class="list-group-item d-flex justify-content-between">
+								<span>@item.Title</span>
+								<div>
+									<span>@item.MediaType</span>
+									<span>@item.Status</span>
+								</div>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	public IReadOnlyList<LibraryDto>? Dto { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Dto = null;
+		Dto = await HttpClient.GetFromJsonAsync<IReadOnlyList<LibraryDto>>("api/v1/library");
+	}
+}

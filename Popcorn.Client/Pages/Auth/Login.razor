@@ -42,6 +42,16 @@
 	public string AlertContent { get; set; } = string.Empty;
 	public string AlertColor { get; set; } = string.Empty;
 
+	protected override async Task OnInitializedAsync()
+	{
+		var result = StateProvider.GetAuthenticationStateAsync();
+		var authState = await result;
+		if(authState.User.Identity?.IsAuthenticated ?? false)
+		{
+			NavigationManager.NavigateTo("/");
+		}
+	}
+
 	private async Task Submit()
 	{
 		ShowAlert = false;
