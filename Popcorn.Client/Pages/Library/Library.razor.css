@@ -1,0 +1,15 @@
+﻿.media-type-badge {
+    background: #fff200;
+    background: linear-gradient(135deg,rgba(255, 242, 0, 1) 0%, rgba(255, 92, 0, 1) 75%, rgba(255, 0, 0, 1) 100%);
+}
+
+.library-container{
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.list-delete-btn {
+    color: #C9A900;
+    font-weight: bold;
+}

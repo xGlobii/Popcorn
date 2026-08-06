@@ -6,7 +6,7 @@
 {
 	<Loading />
 }
-else if(Query == null)
+else if (Query == null)
 {
 	<h2>Enter the title of the movie or TV show, or the name of the person you want to find</h2>
 }
@@ -15,7 +15,7 @@ else
 	<div class="container mt-4">
 		<div class="row mb-3">
 			<div class="col-4 mx-auto">
-				<SearchCategory Query="@Query"/>
+				<SearchCategory Query="@Query" />
 			</div>
 		</div>
 		<div class="row">
@@ -26,8 +26,8 @@ else
 				}
 			</div>
 		</div>
+		<Pagination CurrentPage="@Response.Page" TotalPages="@Response.TotalPages" Url="@GenerateUrl(MediaType, Query)" />
 	</div>
-	<Pagination CurrentPage="@Response.Page" TotalPages="@Response.TotalPages" Url="@GenerateUrl(MediaType, Query)"/>
 }
 
 @code {

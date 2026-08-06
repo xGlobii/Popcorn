@@ -78,11 +78,7 @@
 				TmdbId = MediaId
 			};
 
-			Console.WriteLine("PRZED");
-
 			var result = await HttpClient.PutAsJsonAsync<ActivityDto>($"api/v1/activity", dto);
-
-			Console.WriteLine("PO");
 
 			if (result.IsSuccessStatusCode)
 			{

@@ -1,46 +1,132 @@
 ﻿@page "/library"
 @using Popcorn.Shared.Dto
+@using System.Timers;
 @attribute [Authorize]
 @inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@implements IDisposable
 
 @if (Dto == null)
 {
 	<Loading />
 }
-else if (!Dto.Any())
-{
-	<h2>Nothing to display here</h2>
-}
 else
 {
 	<div class="container">
-		<div class="row mt-4" style="border: 3px solid red; min-height: 500px;">
-			<div class="col-8 mx-auto" style="border: 3px solid green; min-height: 500px;">
-				<div class="card">
-					<ul class="list-group list-group-flush">
-						@foreach (var item in Dto)
-						{
-							<li class="list-group-item d-flex justify-content-between">
-								<span>@item.Title</span>
-								<div>
-									<span>@item.MediaType</span>
-									<span>@item.Status</span>
-								</div>
-							</li>
-						}
-					</ul>
-				</div>
+		<div class="row mt-4 mb-3">
+			<div class="col-8 mx-auto">
+				<form class="d-flex" role="search">
+					<input class="form-control me-2" type="search" placeholder="Search" value="@Query" aria-label="Search" @oninput="Input" />
+				</form>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-8 mx-auto mt-3 library-container">
+				@if (!Dto.Items.Any())
+				{
+					<h2>Nothing to display here</h2>
+				}
+				else
+				{
+					<div class="card">
+						<ul class="list-group list-group-flush">
+							@foreach (var item in Dto.Items)
+							{
+								<li class="list-group-item d-flex justify-content-between">
+									<span class="align-self-center">@item.Title</span>
+									<div>
+										<span class="badge rounded-pill media-type-badge mx-2">@item.MediaType.ToUpper()</span>
+										<span class="mx-2">@item.Status</span>
+										<div class="btn mx-3 list-delete-btn" @onclick="@(() => Delete(item.TmdbId, item.MediaType))">[ Delete ]</div>
+									</div>
+								</li>
+							}
+						</ul>
+					</div>
+				}
+			</div>
+		</div>
+		@if (Dto.Items.Any())
+		{
+			<Pagination CurrentPage="Page" TotalPages="Dto.TotalPages" Url="@BuildUrl()" />
+		}
 	</div>
 }
 
 @code {
-	public IReadOnlyList<LibraryDto>? Dto { get; set; }
+	[SupplyParameterFromQuery]
+	[Parameter]
+	public int Page { get; set; }
+	[SupplyParameterFromQuery]
+	[Parameter]
+	public string Query { get; set; } = string.Empty;
+
+	public LibraryDto? Dto { get; set; }
+
+	private Timer _timer = new Timer(500);
 
 	protected override async Task OnInitializedAsync()
 	{
+		_timer.AutoReset = false;
+		_timer.Elapsed += FilterList;
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
 		Dto = null;
-		Dto = await HttpClient.GetFromJsonAsync<IReadOnlyList<LibraryDto>>("api/v1/library");
+		Dto = await HttpClient.GetFromJsonAsync<LibraryDto>($"api/v1/library?page={Page}&query={Query}");
+	}
+
+	private async Task Delete(int tmdbId, string mediaType)
+	{
+		var result = await HttpClient.DeleteAsync($"api/v1/activity/{mediaType}/{tmdbId}");
+		if (result.IsSuccessStatusCode)
+		{
+			List<LibraryItemDto>? newList = new();
+			if (Dto != null)
+			{
+				foreach (var item in Dto.Items.Where(d => d.TmdbId != tmdbId || d.MediaType != mediaType))
+				{
+					newList.Add(item);
+				}
+				Dto.Items = newList;
+			}
+		}
+	}
+
+	private void Input(ChangeEventArgs eventArgs)
+	{
+		if (eventArgs.Value is string query)
+		{
+			_timer.Stop();
+			Query = query;
+			_timer.Start();
+		}
+	}
+
+	private async void FilterList(Object? source, ElapsedEventArgs e)
+	{
+		await InvokeAsync(Redirect);
+	}
+
+	private void Redirect()
+	{
+		if (string.IsNullOrEmpty(Query))
+			NavigationManager.NavigateTo("/library?page=1", replace: true);
+		else
+			NavigationManager.NavigateTo($"{BuildUrl()}&page=1", replace: true);
+	}
+
+	private string BuildUrl()
+	{
+		if (string.IsNullOrEmpty(Query))
+			return "/library";
+		else
+			return $"/library?query={Query}";
+	}
+
+	public void Dispose()
+	{
+		_timer.Dispose();
 	}
 }
