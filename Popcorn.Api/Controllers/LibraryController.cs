@@ -23,8 +23,6 @@ namespace Popcorn.Api.Controllers
 		{
 			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
 
-			Console.WriteLine(page);
-
 			var result = await _service.GetLibraryItemsAsync(userId, page, query);
 
 			if (result != null)
@@ -32,7 +30,7 @@ namespace Popcorn.Api.Controllers
 			else
 				return Ok(new LibraryDto
 				{ 
-					Items = new List<LibraryItemDto>()
+					Items = new List<MediaItemDto>()
 				});
 		}
 	}

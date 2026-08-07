@@ -37,7 +37,8 @@ namespace Popcorn.Api.Services
 					{
 						MediaType = dto.MediaType,
 						Title = dto.Title,
-						TmdbId = dto.TmdbId
+						TmdbId = dto.TmdbId,
+						PosterPath = dto.PosterPath
 					};
 				}
 
@@ -49,7 +50,7 @@ namespace Popcorn.Api.Services
 						Status = recordStatus,
 						TmdbId = dto.TmdbId,
 						UserId = userId,
-						MediaItem = mediaItem
+						MediaItem = mediaItem,
 					});
 				}
 				else

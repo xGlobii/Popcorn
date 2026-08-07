@@ -82,7 +82,7 @@ else
 		var result = await HttpClient.DeleteAsync($"api/v1/activity/{mediaType}/{tmdbId}");
 		if (result.IsSuccessStatusCode)
 		{
-			List<LibraryItemDto>? newList = new();
+			List<MediaItemDto>? newList = new();
 			if (Dto != null)
 			{
 				foreach (var item in Dto.Items.Where(d => d.TmdbId != tmdbId || d.MediaType != mediaType))

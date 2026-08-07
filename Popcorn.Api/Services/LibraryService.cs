@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Popcorn.Api.Data;
 using Popcorn.Shared.Dto;
-using Popcorn.Shared.Enums;
 using Popcorn.Api.Models.Entities;
 
 namespace Popcorn.Api.Services
@@ -9,7 +8,7 @@ namespace Popcorn.Api.Services
 	public class LibraryService : ILibraryService
 	{
 		private readonly AppDbContext _dbContext;
-		private const int PAGE_SIZE = 4;
+		private const int PAGE_SIZE = 20;
 
 		public LibraryService(AppDbContext dbContext)
 		{
@@ -25,11 +24,11 @@ namespace Popcorn.Api.Services
 
 			var pagedResults = await results.Skip((page - 1) * PAGE_SIZE).Take(PAGE_SIZE).ToListAsync();
 
-			List<LibraryItemDto> dto = new();
+			List<MediaItemDto> dto = new();
 
 			foreach(var item in pagedResults)
 			{
-				dto.Add(new LibraryItemDto
+				dto.Add(new MediaItemDto
 				{
 					MediaType = item.MediaType,
 					Status = item.Status switch
@@ -41,6 +40,7 @@ namespace Popcorn.Api.Services
 					AddedAt = item.AddedAt,
 					Title = item.MediaItem?.Title ?? "",
 					TmdbId = item.TmdbId,
+					PosterPath = item.MediaItem?.PosterPath ?? ""
 				});
 			}
 

@@ -27,6 +27,9 @@
 	[EditorRequired]
 	[Parameter]
 	public string Title { get; set; } = string.Empty;
+	[EditorRequired]
+	[Parameter]
+	public string PosterPath { get; set; } = string.Empty;
 
 	private ActivityStatus _localStatus = ActivityStatus.None;
 
@@ -75,7 +78,8 @@
 				MediaType = MediaType,
 				Status = ActivityStatus.ToWatch,
 				Title = Title,
-				TmdbId = MediaId
+				TmdbId = MediaId,
+				PosterPath = PosterPath,
 			};
 
 			var result = await HttpClient.PutAsJsonAsync<ActivityDto>($"api/v1/activity", dto);
@@ -109,7 +113,8 @@
 				MediaType = MediaType,
 				Status = ActivityStatus.Watched,
 				Title = Title,
-				TmdbId = MediaId
+				TmdbId = MediaId,
+				PosterPath = PosterPath
 			};
 
 			var result = await HttpClient.PutAsJsonAsync<ActivityDto>($"api/v1/activity", dto);
