@@ -1,23 +1,31 @@
-﻿.container{
+﻿.container {
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.details{
+.details {
     border-right: 1px solid #ccc;
 }
 
-.movies{
+.movies {
     border-bottom: 1px solid #ccc;
     background-color: #fafafa;
 }
 
-.series{
+.series {
     background-color: #fafafa;
 }
 
 .badge-bg {
     background: #fff200;
     background: linear-gradient(135deg,rgba(255, 242, 0, 1) 0%, rgba(255, 145, 0, 1) 50%, rgba(255, 0, 0, 1) 100%);
+}
+
+.list-group-item:hover {
+    background-color: #fff2c7;
+}
+
+.card-latest:hover {
+    transform: scale(1.02);
 }

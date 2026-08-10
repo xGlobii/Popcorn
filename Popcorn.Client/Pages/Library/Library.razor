@@ -18,6 +18,23 @@ else
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Search" value="@Query" aria-label="Search" @oninput="Input" />
 				</form>
+
+				<div class="mt-1">
+					<label for="media-type-select">Media type:</label>
+					<select id="media-type-select" @onchange="FilterMediaType" value="@MediaType">
+						<option value="">All</option>
+						<option value="movie">Movie</option>
+						<option value="tv">Tv Serie</option>
+					</select>
+
+					<label for="status-select">Status:</label>
+					<select id="status-select" @onchange="FilterStatus" value="@Status">
+						<option value="">All</option>
+						<option value="watched">Watched</option>
+						<option value="to_watch">To watch</option>
+					</select>
+				</div>
+
 			</div>
 		</div>
 		<div class="row">
@@ -33,8 +50,10 @@ else
 							@foreach (var item in Dto.Items)
 							{
 								<li class="list-group-item d-flex justify-content-between">
-									<span class="align-self-center">@item.Title</span>
-									<div>
+									<a href="/@(item.MediaType)s/@item.TmdbId" class="text-decoration-none text-reset align-self-center stretched-link">
+										<span class="align-self-center">@item.Title</span>
+									</a>
+									<div class="position-relative z-3">
 										<span class="badge rounded-pill media-type-badge mx-2">@item.MediaType.ToUpper()</span>
 										<span class="mx-2">@item.Status</span>
 										<div class="btn mx-3 list-delete-btn" @onclick="@(() => Delete(item.TmdbId, item.MediaType))">[ Delete ]</div>
@@ -60,6 +79,12 @@ else
 	[SupplyParameterFromQuery]
 	[Parameter]
 	public string Query { get; set; } = string.Empty;
+	[SupplyParameterFromQuery(Name = "media-type")]
+	[Parameter]
+	public string MediaType { get; set; } = string.Empty;
+	[SupplyParameterFromQuery]
+	[Parameter]
+	public string Status { get; set; } = string.Empty;
 
 	public LibraryDto? Dto { get; set; }
 
@@ -74,7 +99,7 @@ else
 	protected override async Task OnParametersSetAsync()
 	{
 		Dto = null;
-		Dto = await HttpClient.GetFromJsonAsync<LibraryDto>($"api/v1/library?page={Page}&query={Query}");
+		Dto = await HttpClient.GetFromJsonAsync<LibraryDto>($"api/v1/library?page={Page}&query={Query}&mediatype={MediaType}&status={Status}");
 	}
 
 	private async Task Delete(int tmdbId, string mediaType)
@@ -111,22 +136,53 @@ else
 
 	private void Redirect()
 	{
-		if (string.IsNullOrEmpty(Query))
-			NavigationManager.NavigateTo("/library?page=1", replace: true);
+		string url = BuildUrl();
+		if(url.Contains('?'))
+			NavigationManager.NavigateTo($"{url}&page=1", replace: true);
 		else
-			NavigationManager.NavigateTo($"{BuildUrl()}&page=1", replace: true);
+			NavigationManager.NavigateTo("/library?page=1", replace: true);
 	}
 
 	private string BuildUrl()
 	{
-		if (string.IsNullOrEmpty(Query))
-			return "/library";
-		else
-			return $"/library?query={Query}";
+		List<string> parameters = new();
+
+		if (!string.IsNullOrEmpty(Query))
+			parameters.Add($"query={Query}");
+		if (!string.IsNullOrEmpty(MediaType))
+			parameters.Add($"media-type={MediaType}");
+		if (!string.IsNullOrEmpty(Status))
+			parameters.Add($"status={Status}");
+
+		string urlParams = String.Join("&", parameters);
+		string baseUrl = "/library";
+
+		if (string.IsNullOrEmpty(urlParams))
+			return baseUrl;
+
+		return $"{baseUrl}?{urlParams}";
 	}
 
 	public void Dispose()
 	{
 		_timer.Dispose();
+	}
+
+	private void FilterMediaType(ChangeEventArgs e)
+	{
+		if(e.Value is string mediaType)
+		{
+			MediaType = mediaType;
+			Redirect();
+		}
+	}
+
+	private void FilterStatus(ChangeEventArgs e)
+	{
+		if(e.Value is string status)
+		{
+			Status = status;
+			Redirect();
+		}
 	}
 }

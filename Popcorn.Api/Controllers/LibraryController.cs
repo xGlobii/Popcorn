@@ -19,17 +19,17 @@ namespace Popcorn.Api.Controllers
 
 		[Authorize]
 		[HttpGet]
-		public async Task<ActionResult<LibraryDto>?> GetList([FromQuery] int page = 1, [FromQuery] string query = "")
+		public async Task<ActionResult<LibraryDto>?> GetList([FromQuery] LibraryFilterDto dto)
 		{
 			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
 
-			var result = await _service.GetLibraryItemsAsync(userId, page, query);
+			var result = await _service.GetLibraryItemsAsync(userId, dto);
 
 			if (result != null)
 				return Ok(result);
 			else
 				return Ok(new LibraryDto
-				{ 
+				{
 					Items = new List<MediaItemDto>()
 				});
 		}

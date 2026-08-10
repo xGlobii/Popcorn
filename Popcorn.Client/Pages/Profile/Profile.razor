@@ -16,19 +16,27 @@ else
 				<div>
 					<ul class="list-group">
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							Watched
+							<a href="/library?page=1&status=watched" class="text-decoration-none text-reset stretched-link">
+								Watched
+							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.WatchedCount</span>
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							To watch
+							<a href="/library?page=1&status=to_watch" class="text-decoration-none text-reset stretched-link">
+								To watch
+							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.ToWatchCount</span>
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							Movies
+							<a href="/library?page=1&media_type=movie" class="text-decoration-none text-reset stretched-link">
+								Movies
+							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.MoviesCount</span>
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							Tv series
+							<a href="/library?page=1&media_type=tv" class="text-decoration-none text-reset stretched-link">
+								Tv series
+							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.TvSeriesCount</span>
 						</li>
 					</ul>
@@ -38,14 +46,14 @@ else
 				<div class="row movies">
 					<div class="col">
 						<div class="row mt-2">
-							<h5>Movies last activity</h5>
+							<h5>Last Movie Activity</h5>
 						</div>
 						<div class="row justify-content-center mb-2">
 							@foreach (var movie in Dto.Movies)
 							{
 								<div class="col-auto">
 									<a href="@GenerateUrl(movie.MediaType, movie.TmdbId)" class="text-decoration-none">
-										<div class="card h-100" style="max-width: 12rem;">
+										<div class="card card-latest h-100" style="max-width: 12rem;">
 											<img src="@movie.PosterPath" class="card-img-top" alt="...">
 											<div class="card-body">
 												<p class="card-text">@movie.Title</p>
@@ -64,14 +72,14 @@ else
 				<div class="row series">
 					<div class="col">
 						<div class="row mt-2">
-							<h5>Tv series last activity</h5>
+							<h5>Last Tv Series Activity</h5>
 						</div>
 						<div class="row justify-content-center mb-2">
 							@foreach (var serie in Dto.TvSeries)
 							{
 								<div class="col-auto">
 									<a href="@GenerateUrl(serie.MediaType, serie.TmdbId)" class="text-decoration-none">
-										<div class="card h-100" style="max-width: 12rem;">
+										<div class="card card-latest h-100" style="max-width: 12rem;">
 											<img src="@serie.PosterPath" class="card-img-top" alt="...">
 											<div class="card-body">
 												<p class="card-text">@serie.Title</p>
