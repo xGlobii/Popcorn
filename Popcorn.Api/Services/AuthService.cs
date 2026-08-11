@@ -54,14 +54,16 @@ namespace Popcorn.Api.Services
 
 		public async Task<AuthTokensDto?> Login(LoginDto dto)
 		{
-			var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+			var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == dto.Email);
 
 			if (user == null)
 				return null;
 
 			if (BC.Verify(dto.Password, user.HashedPassword))
 			{
-				var token = GenerateJwtToken(user.Id.ToString());
+				var sessionId = Guid.NewGuid();
+
+				var token = GenerateJwtToken(user.Id.ToString(), user.Username, sessionId);
 
 				if (string.IsNullOrEmpty(token))
 					return null;
@@ -74,7 +76,8 @@ namespace Popcorn.Api.Services
 					{
 						RefreshToken = refreshToken.hashedToken,
 						ExpireAt = DateTime.UtcNow.AddDays(7),
-						User = user
+						UserId = user.Id,
+						SessionId = sessionId
 					});
 
 					await _dbContext.SaveChangesAsync();
@@ -94,7 +97,7 @@ namespace Popcorn.Api.Services
 			return null;
 		}
 
-		private string GenerateJwtToken(string userId)
+		private string GenerateJwtToken(string userId, string username, Guid sessionId)
 		{
 			var key = _config["Auth:SecurityKey"];
 			if (key == null)
@@ -105,6 +108,8 @@ namespace Popcorn.Api.Services
 			List<Claim> claims = new();
 
 			claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userId));
+			claims.Add(new Claim(JwtRegisteredClaimNames.Sid, sessionId.ToString()));
+			claims.Add(new Claim(ClaimTypes.Name, username));
 
 			var payload = new JwtPayload(
 				issuer: "Popcorn",
@@ -158,19 +163,45 @@ namespace Popcorn.Api.Services
 
 			var token = tokenHandler.ReadJwtToken(dto.Token);
 
-			string refreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(dto.RefreshToken)));
-
 			if (!Guid.TryParse(token.Payload.Sub, out Guid userId))
 			{
 				return null;
 			}
 
-			var result = await _dbContext.UserSessions.FirstOrDefaultAsync(us => us.UserId == userId && us.ExpireAt > DateTime.UtcNow && us.RefreshToken == refreshToken && us.IsRevoked == false);
+			string refreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(dto.RefreshToken)));
+
+			var usernameClaim = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+
+			if (usernameClaim == null)
+				return null;
+
+			var sessionIdClaim = token.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sid);
+
+			if (sessionIdClaim == null)
+				return null;
+
+			if (!Guid.TryParse(sessionIdClaim.Value, out Guid sessionId))
+			{
+				return null;
+			}
+
+			var result = await _dbContext.UserSessions.FirstOrDefaultAsync(us => us.UserId == userId && us.RefreshToken == refreshToken);
 
 			if (result == null)
 				return null;
 
-			var newToken = GenerateJwtToken(token.Payload.Sub);
+			if (result.IsRevoked)
+			{
+				var userSessions = await _dbContext.UserSessions.Where(us => us.UserId == userId && us.SessionId == sessionId).ExecuteUpdateAsync(setter => setter.SetProperty(p => p.IsRevoked, true));
+				return null;
+			}
+
+			if(result.ExpireAt <= DateTime.UtcNow)
+			{
+				return null;
+			}
+
+			var newToken = GenerateJwtToken(token.Payload.Sub, usernameClaim.Value, sessionId);
 			var newRefreshToken = GenerateRefreshToken();
 
 			try
@@ -181,7 +212,8 @@ namespace Popcorn.Api.Services
 				{
 					RefreshToken = newRefreshToken.hashedToken,
 					ExpireAt = DateTime.UtcNow.AddDays(7),
-					UserId = userId
+					UserId = userId,
+					SessionId = sessionId
 				});
 
 				await _dbContext.SaveChangesAsync();
@@ -198,11 +230,11 @@ namespace Popcorn.Api.Services
 			}
 		}
 
-		public async Task<bool> Logout(Guid userId)
+		public async Task<bool> Logout(Guid userId, Guid sessionId)
 		{
 			try
 			{
-				await _dbContext.UserSessions.Where(u => u.UserId == userId && u.IsRevoked == false).ExecuteUpdateAsync(setters => setters.SetProperty(p => p.IsRevoked, true));
+				await _dbContext.UserSessions.Where(u => u.UserId == userId && u.IsRevoked == false && u.SessionId == sessionId).ExecuteUpdateAsync(setters => setters.SetProperty(p => p.IsRevoked, true));
 
 				return true;
 			}

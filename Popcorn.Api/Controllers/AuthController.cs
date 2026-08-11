@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Popcorn.Api.Services;
 using Popcorn.Shared.Dto;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Popcorn.Api.Controllers
@@ -58,9 +59,12 @@ namespace Popcorn.Api.Controllers
 		[Route("logout")]
 		public async Task<ActionResult> Logout()
 		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
+			if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId))
+				return BadRequest();
+			if (!Guid.TryParse(User.FindFirstValue(JwtRegisteredClaimNames.Sid), out Guid sessionId))
+				return BadRequest();
 
-			var result = await _authService.Logout(userId);
+			var result = await _authService.Logout(userId, sessionId);
 
 			if (result)
 				return Ok();

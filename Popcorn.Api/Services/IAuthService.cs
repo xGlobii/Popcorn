@@ -7,6 +7,6 @@ namespace Popcorn.Api.Services
 		public Task<bool> Register(RegisterDto dto);
 		public Task<AuthTokensDto?> Login(LoginDto dto);
 		public Task<AuthTokensDto?> Refresh(AuthTokensDto dto);
-		public Task<bool> Logout(Guid userId);
+		public Task<bool> Logout(Guid userId, Guid sessionId);
 	}
 }

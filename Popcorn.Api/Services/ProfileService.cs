@@ -17,11 +17,6 @@ namespace Popcorn.Api.Services
 
 		public async Task<ProfileDto?> GetDetailsAsync(Guid userId)
 		{
-			var username = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-
-			if (username == null)
-				return null;
-
 			var moviesCount = await _dbContext.Activities.CountAsync(a => a.UserId == userId && a.MediaType == "movie");
 			var tvSeriesCount = await _dbContext.Activities.CountAsync(a => a.UserId == userId && a.MediaType == "tv");
 			var watchedCount = await _dbContext.Activities.CountAsync(a => a.UserId == userId && a.Status == Status.Watched);
@@ -77,7 +72,6 @@ namespace Popcorn.Api.Services
 				MoviesCount = moviesCount,
 				ToWatchCount = toWatchCount,
 				TvSeriesCount = tvSeriesCount,
-				Username = username.Username,
 				WatchedCount = watchedCount
 			};
 		}

@@ -22,17 +22,20 @@ namespace Popcorn.Api.Controllers
 		public async Task<ActionResult<ProfileDto>> GetDetails()
 		{
 			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
+			var username = User.FindFirstValue(ClaimTypes.Name);
+
+			if (username == null)
+				return Ok(new ProfileDto());
 
 			var result = await _service.GetDetailsAsync(userId);
 
 			if (result != null)
+			{
+				result.Username = username;
 				return Ok(result);
+			}
 			else
-				return Ok(new ProfileDto
-				{
-					Movies = new List<MediaItemDto>(),
-					TvSeries = new List<MediaItemDto>()
-				});
+				return Ok(new ProfileDto());
 		}
 	}
 }
