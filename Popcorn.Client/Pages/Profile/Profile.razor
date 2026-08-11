@@ -6,9 +6,11 @@
 @if (Dto == null)
 {
 	<Loading />
+	<PageTitle>Loading... | Popcorn</PageTitle>
 }
 else
 {
+	<PageTitle>@Dto.Username's profile</PageTitle>
 	<div class="container mt-3 mb-3">
 		<div class="row mt-3">
 			<div class="col-3 details">
@@ -28,13 +30,13 @@ else
 							<span class="badge badge-bg rounded-pill">@Dto.ToWatchCount</span>
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<a href="/library?page=1&media_type=movie" class="text-decoration-none text-reset stretched-link">
+							<a href="/library?page=1&media-type=movie" class="text-decoration-none text-reset stretched-link">
 								Movies
 							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.MoviesCount</span>
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<a href="/library?page=1&media_type=tv" class="text-decoration-none text-reset stretched-link">
+							<a href="/library?page=1&media-type=tv" class="text-decoration-none text-reset stretched-link">
 								Tv series
 							</a>
 							<span class="badge badge-bg rounded-pill">@Dto.TvSeriesCount</span>

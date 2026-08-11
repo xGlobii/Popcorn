@@ -5,9 +5,11 @@
 @if (dto == null)
 {
 	<Loading />
+	<PageTitle>Loading... | Popcorn</PageTitle>
 }
 else
 {
+	<PageTitle>Home | Popcorn</PageTitle>
 	<div class="container mt-4 mb-3">
 		<div class="row justify-content-end hero-banner w-75 mx-auto" style="--poster-url: url(@dto.Discover.ImagePath);">
 			<div class="col-7 hero-details">
